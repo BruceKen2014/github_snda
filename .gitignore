@@ -41,3 +41,25 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+#visual studio useless files
+ipch/
+_UpgradeReport_Files/
+UpgradeLog.XML
+*.unsuccessfulbuild
+*.obj
+*.pcb
+*.pch
+*.pdb
+*.ilk
+*.tlog
+*.sdf
+*.suo
+*.idb
+*.lastbuildstate
+*.opensdf
+*.Build.CppClear.log
+*.log
+*.opensdf
+*.cache
+*.aps

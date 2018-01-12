@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="TestMyClass&lt;*&gt;">
+    <DisplayString> test class!</DisplayString>
+  </Type>
+  <Type Name="DVector&lt;*&gt;" Inheritable="false">
+    <DisplayString>{{ capacity={capacity},str = {str,s}}}</DisplayString>
+    <StringView>str,s</StringView>
+    <Expand>
+      <Item Name="[size]" IncludeView="simple">size</Item>
+      <Item Name="[capacity]" ExcludeView="simple">capacity</Item>
+      <ArrayItems>
+        <Size>size</Size>
+        <ValuePointer>ptr</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+</AutoVisualizer>
