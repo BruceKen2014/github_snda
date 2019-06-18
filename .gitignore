@@ -63,3 +63,7 @@ UpgradeLog.XML
 *.opensdf
 *.cache
 *.aps
+*.exe
+*.ipdb
+*.VC.db
+*.iobj
