@@ -67,3 +67,5 @@ UpgradeLog.XML
 *.ipdb
 *.VC.db
 *.iobj
+*.db-shm
+*.db-wal
