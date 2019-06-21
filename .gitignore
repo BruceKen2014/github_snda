@@ -69,3 +69,4 @@ UpgradeLog.XML
 *.iobj
 *.db-shm
 *.db-wal
+*.vc.opendb
