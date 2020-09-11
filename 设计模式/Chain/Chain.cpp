@@ -70,8 +70,81 @@ public:
 	}
 };
 
+
+
+struct stEvent{
+
+};
+class CEventHandler;
+class DexObject;
+class CDelegate
+{
+public:
+	CDelegate() {};
+	virtual ~CDelegate() {};
+};
+class CDelegateG :public CDelegate
+{//挂接全局函数
+public:
+	typedef void(*EventCallBack)(DexObject*, stEvent);
+private:
+	EventCallBack m_fun;
+public:
+	CDelegateG() {};
+	CDelegateG(EventCallBack fun) {};
+	virtual ~CDelegateG() {};
+
+};
+class CDelegateM :public CDelegate
+{//挂接成员函数
+public:
+	typedef void  (CEventHandler::*EventCallBack)(CEventHandler* sys, DexObject*, stEvent);
+private:
+	CEventHandler* m_gameSys; //处理事件的系统
+	EventCallBack  m_fun;	  //系统内函数  
+
+public:
+	CDelegateM() {};
+	CDelegateM(CEventHandler* sys, EventCallBack fun) {
+		m_gameSys = sys;
+		m_fun = fun;
+	};
+	virtual ~CDelegateM() {};
+};
+
+
+void TInit2()
+{
+	int* i1 = new int[1024];
+	int* i2 = new int[1024];
+	int* i3 = new int[1024];
+	int* i4 = new int[1024];
+	int* i5 = new int[1024];
+
+
+	CDelegate* g2 = new CDelegateG();
+	CDelegate* g3 = new CDelegateG();
+	CDelegate* g4 = new CDelegateG();
+	CDelegate* g5 = new CDelegateG();
+	CDelegate* g6 = new CDelegateG();
+
+
+	CDelegate* e2 = new CDelegateM();
+	CDelegate* e3 = new CDelegateM();
+	CDelegate* e4 = new CDelegateM();
+	CDelegate* e5 = new CDelegateM();
+	CDelegate* e6 = new CDelegateM();
+
+
+	CDelegate* l2 = new CDelegateM(nullptr, nullptr);
+	CDelegate* l3 = new CDelegateM(nullptr, nullptr);
+	CDelegate* l4 = new CDelegateM(nullptr, nullptr);
+	CDelegate* l5 = new CDelegateM(nullptr, nullptr);
+	CDelegate* l6 = new CDelegateM(nullptr, nullptr);
+}
 int main()
 {
+	TInit2();
 	GuildMember* pTeamLeader = new TeamLeader;
 	GuildMember* pGuilderLeader = new GuildLeader;
 	GuildMember* pChif = new GuildLeaderChief;

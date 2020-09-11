@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include <iostream>
+#include <vector>
 
 /*
 单例模式：核心思想就是一个类在系统只能有一个实例,所以必须保证构造函数是私有的
@@ -23,8 +24,46 @@ private:
 	SystemSingleton() {}
 
 };
+
+class MyArray
+{
+public:
+	MyArray() = default;
+	~MyArray()
+	{
+		cout << "析构" << m_iCount << endl;
+	}
+	MyArray(int count) :m_iCount(count),m_iMax(count)
+	{
+		cout << "构造函数" << endl;
+		pData = new int[m_iCount];
+	}
+	MyArray(const MyArray& OtherValue)
+	{
+		cout << "copy构造函数" << endl;
+		if (pData != nullptr)
+			delete[] pData;
+		m_iCount = OtherValue.m_iCount;
+		pData = new int[m_iCount];
+	}
+	MyArray(MyArray&& OtherValue)
+	{
+		cout << "move构造函数" << endl;
+		m_iCount = OtherValue.m_iCount;
+		pData = OtherValue.pData;
+		OtherValue.m_iCount = 0;
+		OtherValue.pData = nullptr;
+	}
+
+	int m_iCount= 0;
+	int m_iMax = 0;
+	int* pData=0;
+};
 int main()
 {
+	vector<MyArray> vec;
+	vec.push_back(MyArray(5));
+	MyArray d2 = MyArray(5);
 	SystemSingleton::getInstance()->Hello();
 	return 0;
 }
