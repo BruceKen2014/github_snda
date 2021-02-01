@@ -1,0 +1,135 @@
+
+----By Bruce 
+----2013-7-11
+
+list
+
+list <type >  L      空链表
+list <type > L0 ;    新建一个链表
+list <type > L1 (9); 新建一个链表，内涵9个默认值，默认调用type的无参构造函数， 如int 为 9个0
+list <type > L2 (L1) 以L1为链表，完全拷贝一个新的链表L2
+
+L.assign(3,4);  先将L清空，然后分配三个元素，每个元素值均为4
+L.assign(beg, end); 先将L清空，然后将迭代器所指的区间[beg, end)进行赋值，
+
+L1 = list1;   list重载了=号操作符，可以直接赋值
+
+L1.front()    返回L1第一个元素的引用，如果执行语句 L1.front() = elem，则将改变L1第一个元素的值
+
+L1.back()    返回L1最后第一个元素的引用
+
+L1.begin() L1.end()    取得list迭代器的头尾指针
+L1.rbegin() L1.rend()  反向取得list迭代器的头尾指针，此时如果想使用迭代器的话，应该使用reverse_iteratorer而非iteratorer
+
+L1.push_back()   增加一个元素到链表尾部
+L1.push_front()  增加一个元素到链表头部
+L1.pop_back()    删除尾元素
+L1.pop_back()    删除头一个元素
+
+L1.clear()       清空链表
+
+L1.erase(pos)    删除迭代器pos所指向的元素，返回一个迭代器，指向pos的下一个位置，换个角度理解，pos被删除后，它后面所有的元素都向前移动了一位，而返回值便指向刚顶上来的那个元素
+
+L1.erase(beg,end) 删除[beg,end)区间的数据
+
+L1.remove(elem)    删除L1中所有与elem匹配的元素，如对L（4,2,3,5，4，6）调用L1.remove(4)之后，会剩下（2,3,5,6）elem必须与元素是相同类型
+
+
+
+remove_if() 删除条件满足的元素( 遍历一次链表) ，参数为自定义的回调函数
+例：
+// 小于2 的值删除
+bool myFun (const int & value ) { return (value < 2); }
+list1.remove_if( myFun ); 
+实际使用时，我们要删除时，可能要判断很多复杂的条件，因此这个函数并不常用，而且一个删除功能，被硬生生拆成了两个函数，不利于程序的内聚
+
+
+empty() 判断是否链表为空
+
+size() 返回链表中元素个数
+
+max_size() 返回链表最大可能长度
+
+
+resize() 重新定义链表长度( 两重载函数)
+list1.resize(5)    // list1 (1,2,3, 0,0 ) 用默认值填补
+list1.resize(5,4)    // list1 (1,2,3, 4,4 ) 用指定值 填补
+
+reverse() 反转链表
+
+
+
+sort() 对链表排序，默认升序( 可自定义回调函数 )
+list 对象L1(4,3,5,1,4)
+L1.sort( );  //从小到大排序 L1(1,3,4,4,5) 等同于调用L1.sort(less<int>())
+L1.sort( greater <int >() ); //从大到小 L1(5,4,4,3,1)
+
+
+
+
+merge() 合并两个有序链表并使之有序，在合并之前两个链表必须是有序的，而且是相同的顺序，即同时是升序或者降序，可以先用sort进行一个排序，然后再进行合并，合并之后list2便为空了
+// 默认从小到大，升序
+list1.merge(list2);          // list1(1,2,3,4,5,6) list2 现为空
+// 降序
+L1( 3,2,1), L2(6,5,4)
+L1.merge(L2, greater <int >() ); // list1(6,5,4,3,2,1) list2 现为空
+
+
+
+splice() 对两个链表进行结合( 三个重载函数)
+
+list1.splice( list1.iterator,list2); 第一个参数指定要插入的位置(在iterator之前插入，即插入后iterator被往后挤了)，第二个指定要插的list，插入后list2变为空,执行之后，iterator依然指向list1当初的那个元素
+
+list1.splice( list1.begin(),list2,list2.pos);第一个指定要插入的位置，第二个指定目标list，第三个参数指定要插入的元素第二个list当中的位置，执行过后pos所在的元素被从list2中删除，而pos这个迭代器也便失效了
+
+list1.splice( list1.begin, list2,++list2.begin(),list2.end());
+第一个参数指定要插入的位置，第二个指定list,后面两个指定区间[it1,it2)
+第二个list删除相应的被移动的元素
+// list1( 1,4,2,3); list2(5,6)
+//list1( 1, 5,6, 2,3); list2(4)
+其中第二个参数可以是自身，后面两个迭代器可以是自身的迭代器，这样可以用来在一个list中进行元素的移动
+
+
+
+insert() 在指定位置插入一个或多个元素( 三个重载函数)
+
+list1.insert( pos, elem);  // 在pos之处插入元素elem
+
+list1.insert(pos, n, elem);  //在pos之处插入n个元素elem
+
+list1.insert(pos, it1, it2);//list1(4,5,1,2,3);
+          //在迭代器pos之处插入元素，元素由区间[it1，it2)指定
+
+swap() 交换两个链表
+list1.swap(list2);   // list1 （4 ，5 ，6 ） list2 （1 ，2 ，3 ）
+
+
+unique() 删除相邻重复元素，只是删除相邻的重复的，其他的重复删除不了，前提是元素必须要重载了等号操作符，否则无法比较
+L1( 1, 1 ,4,3,5,1)
+L1.unique( );         // L1(1,4,3,5,1)
+
+
+
+
+
+
+
+
+注意：
+list的迭代器看上去和vector的迭代器差不多，其实还是有相当的差别的，如现有一个list<int> L,执行以下语句 list<int>::iterator it = L.begin(); it = it + 1;会报错，而换成++it就没有问题，但是对于向量来说就可以vector<int> v, vector<int>::iterator it = v.begin(); it = it + 1;
+这是为什么呢？原因是向量在内存中的存储是连续的，占据着一片连续的内存区域，it直接加1的话，向量会自动寻到下一个地址位置，而链表在内存中的存储是不连续的，直接进行加1的话，指针将不知道指向哪里，而调用++it的话，则会跳到下一个元素所在的地址
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,104 @@
+
+
+
+
+2013.7.22
+
+
+
+
+一、map的插入
+有三种方法
+map<string, string> feeling
+数组方式插入
+feeling["晴"] = "嗯，是个好天气，感觉不错~~"
+feeling["阴天"] = "阴天的感觉不太好~"
+    这样如果之前对应键存在，则会覆盖之前的数据
+pair<map<string, string>::iterator, bool> ret;
+ret = feeling.insert(pair<string, string>("大雨","夏天的大雨有利于降降暑~"));
+if(ret.second)
+       cout<<"插入成功"<<endl;
+ret = feeling.insert(map<string, string>::value_type("阴到多云", "又是太官方的报道~。~"));
+if(ret.second)
+       cout<<"插入成功"<<endl;
+
+
+二、map的查找
+map中有三种查找方式
+1.count(key)函数
+传入键值key,如果map中存在这个键，则返回1，否则返回0
+例：
+if(feeling.count("小雪") == 1)
+    cout<<"找到了该天气"<<endl;
+2.find(key)函数
+返回的是一个迭代器，如果找到了key,则返回的迭代器指向这个位置，如果没有找到，返回map.end()
+例： map<string, string>::iterator it = feeling.find("晴");
+if(it != feeling.end())
+   cout<<"找到了这个天气"<<endl;
+3.利用equal_range(key)函数进行判断
+先说一下map中的另两个函数lower_bound(key)与upper_bound(key)
+这两个函数对map中的键值进行了比较，
+lower_bound(key)返回大于等于key的位置
+upper_bound()返回大于key的位置
+如果有 m[1] m[2] m[3] 则 m.lower_bound(2)返回指向2迭代器，m.upper_bound(3)返回指向3的迭代器，如果lower_bound或者upper_bound传入的key在map中不存在，那么lower_bound返回大于key的迭代器，如果返回的是map.end，则证明传入的key在map中是不存在的，所以如果调用lower_bound返回end,则可判断key不存在，但反过来不成立，即如果lower_bound返回了一个迭代器，不不代表key存在，有可能是大于key的那个迭代器,
+如果upper_bound传入了一个不存在的key,则返回的迭代器同样指向比key大的那个位置，如果返回end,key有可能存在，那就是最后一个key，当然也有可能不存在，所以单单依据upper_bound同样无法确定一个key是否存在，
+结合lower_bound和upper_bound,如果lower_bound返回的迭代器等于upper_bound的迭代器，则证明key不存在，利用反证法证明：如果key存在,那么lower_bound必然返回的是本身的iterator,而uppper_bound返回的必然是大于key的iterator(有可能是end),但二者绝不可能相等，所以如果它们相等，就说明Key是不存在的，
+例: m[2]  m[4]  m[7]
+lower_bound(3) = ite_4
+upper_bound(3) = ite_4
+不存在，故相等，成立
+lower_bound(4) = ite_4
+upper_bound(4) = ite_7
+存在，故不相等，成立
+lower_bound(7) = ite_7
+upper_bound(7) = end
+存在，故不相等
+lower_bound(8) = end
+upper_bound(8) = end
+不存在，故相等,
+所以第三种方法便是取lower_bound和upper_bound的迭代器，然后判断二者是否相等，相等则不存在，否则存在
+map的equal_range(key)返回的便是key的lower_bound和uppder_bound，
+类型为pair<iterate1, iterator2>，
+取pair<it1, it2> i;
+i = m.equal_range(key);
+if(i.first == i.second)
+  cout<<"不存在";
+else
+  cout<<"存在";
+ 
+
+
+三、map的大小
+size函数返回当前map中的元素个数
+
+
+
+四、map的遍历
+map的迭代器与stl中vector、list、string等都有所不同，vector等it要用*才能取到数据，而map的迭代器直接取值，it->first = key , it->second = value,其他遍历什么的都差不多啦~
+用数组遍历的情况，只适用于key值为int,且key值连续的情况，不过迭代遍历不是map的招牌，一对一的快速访问才是王道~
+
+
+
+五、map的删除
+
+clear()函数用于将map清空，empty()用于判断是否为空
+erase()有三个重载函数
+erase(iterator)传入要删除的迭代器
+erase(key)     传入要删除的key值
+以上两个erase都返回的是迭代器，如果要删除的数据不存在，则返回map.end()
+erase(it1, it2) 传入迭代器it1, it2，删除[it1， it2)区间的数据,返回值为size_type类型，告诉我们删除了多少个元素
+
+
+
+六、map的排序
+map默认采用从小到大的顺序进行排序，我们一边插入数据，map一边为我们排序了，map自动根据key值的大小将数据插入到响应的位置去，所以当遍历map时，输出结果可能和当初插入的顺序不一样
+
+
+
+
+其他
+map1.swap(map2)  和map2进行数据的互换（STL的通用方法）
+map每个节点在不保存数据时，就已经占用了16个字节，父节点指针，左右孩子指针，表明该节点红黑属性的枚举值
+
+
+

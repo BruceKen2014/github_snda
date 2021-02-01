@@ -1,0 +1,59 @@
+
+
+
+----By Bruce 
+----2013-7-9
+
+vector
+
+
+v2 = v1                   可以直接赋值，
+c.assign(beg,end)	  将[beg; end)区间中的数据赋值给c。
+c.assign(n,elem)	  将n个elem的拷贝赋值给c。 
+
+其中beg和end均指的是相同类型的迭代器，c在进行assign时自己进行了清空操作，即assign之后，c原来的数据都不在了。如果c的成员是指针类型，则注意在此操作之前先进行内存空间的释放。
+elem是c装的数据类型，比如说如果c中是指针的话，则elem必须是指针类型
+
+c.at(idx)             传回索引idx所指的数据，如果idx越界，抛出out_of_range。  用法和直接用下标一样
+
+c.back()              传回最后一个数据，注意这里返回值是一个引用，即如果改变这个返回值的话，将改变向量最后一个元素的值。如果c为空，则会报错。
+c.front()             传回第一个数据，同样也是引用   
+
+c.erase(pos)		  删除pos位置的数据，返回一个迭代器，这个迭代器指向刚才删掉的那个数据位置，也就是说，进行erase操作之后，被删元素后面的所有元素都向前移动了一位，我们可以理解pos这个迭代器指向的位置没有变(只是指向的数据变了，同时向量的大小变了)，当然你必须调用语句pos = c.erase(pos)，否则的话pos就是一个野指针。pos指向的位置必须有数据，否则会报错，比如你如果调用c.erase(end)的话，就会报错，如果pos刚好是最后一个数据，那么erase之后，pos = end（删除最后一个元素时相当于把end向前推了一位，刚好碰上了pos）。我们在用erase循环删除vector元素时，便可以利用pos = c.erase(pos),pos ?= end来判断是否已经删除完了。
+
+c.erase(beg,end)	  删除[beg,end)区间的数据	
+
+c.insert(pos,elem)	  在pos位置插入一个elem拷贝，传回新数据位置。这里的pos是一个迭代器，可以是[begin,end]的任何位置，返回的也是一个迭代器，比如pos = begin，则返回的还是begin,它将所有数据都往后“挤”了一位，比如pos = end ,则返回的是end - 1,为什么是end - 1呢，这是因为原来end处是空的，是没有数据的，现在在这里插入了一个数据，它不能把任何人往后“挤”，返回的迭代器便指向这个数据，所以准确地说是end = 新的end - 1.可以这样归纳，插的是谁，最后便指向谁，插在哪里，最后便指向哪里，
+
+insert(pos,n,elem)  在pos位置插入n个elem数据。无返回值。这里的pos同样可以取[begin,end],先把包括pos在内的所有数据往后移一位，然后把n个elem插进去，注意这个函数是没有返回值的。
+
+c.insert(pos,beg,end) 在pos位置插入[beg,end)区间的数据。无返回值。同样，先把包括pos在内的所有数据往后移一位，然后把[beg, end)区间的数据插进去，这里也没有返回值
+
+c.pop_back()		  删除最后一个数据，然后c的size当然也减少1了。
+
+c.rbegin()		  传回一个逆向队列的第一个数据。
+c.rend()	          传回一个逆向队列的最后一个数据的下一个位置。
+
+c.resize(num)		  重新指定向量的大小，如果num小于原来的size，则向量多出的数据将会被截掉，如果num大于原来的size，则向量会将多出来的空间补充为默认值，如int向量补充为0
+c.resize(num， value)	  重新指定向量的大小，如果num小于原来的size，则向量多出的数据将会被截掉，如果num大于原来的size,则新多出来的位置通通补上value.
+
+c1.swap(c2)		  将c1和c2元素互换。可以理解为两个向量进行了一个完全的互换
+swap(c1,c2)		  同上操作。
+
+
+vector<Elem> c		  创建一个空的vector。
+vector <Elem> c1(c2)  复制一个vector。
+vector <Elem> c(n)	  创建一个vector，含有n个数据，数据均已缺省构造产生。
+vector <Elem> c(n, elem)   创建一个含有n个elem拷贝的vector。
+vector <Elem> c(beg,end)   创建一个以[beg;end)区间的vector。
+
+c.~ vector <Elem>()	   销毁所有数据，释放内存。不推荐这样做，因为涉及到指针的话，这样很容易出现内存泄露，而不涉及到指针的话，直接clear就行了，或者麻烦一点，先循环erase在clear，这是处理指针向量比较保险的做法。
+
+
+
+
+c.max_size()  返回向量最大可能大小
+
+
+
+
