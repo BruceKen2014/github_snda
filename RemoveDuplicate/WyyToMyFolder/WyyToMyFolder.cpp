@@ -10,6 +10,7 @@
 #include <vector>
 #include <Shlwapi.h>
 
+
 using namespace std;
 
 #ifdef _UNICODE
@@ -49,6 +50,9 @@ bool IsMusicTypeFile(const MYChar* filename);
 bool IsDuplicateFile(const MYChar* filename);
 //获取NCM文件对应的MP3文件名
 MYString GetNCM_MP3Name(const MYChar* FileName);
+//获取NCM文件对应的目标文件名
+MYString GetNCM_TargetMusicFileName(const MYChar* FileName, const MYChar* TargetType);
+
 //获取带路径文件名的纯文件名,如C://1.txt转换为1.txt
 MYString GetPureFileName(const MYChar* FileName);
 //删除重复文件
@@ -59,7 +63,6 @@ void ConverNCMFile();
 void CopyMusicFile();
 //分割字符串
 void SplitStr(MYString str, MYChar split_char, vector<MYString> &out);
-
 string GetOutputString(MYString str);
 
 //该文件是否存在
@@ -142,6 +145,24 @@ MYString GetNCM_MP3Name(const MYChar* FileName)
 
 	return TempFile;
 }
+MYString GetNCM_TargetMusicFileName(const MYChar* FileName,const MYChar* TargetType)
+{
+	MYChar TempFile[128];
+	memset(TempFile, 0, 128);
+	int index = 0;
+	while (1)
+	{
+		if (FileName[index] == '.' && FileName[index + 1] == 'n' && FileName[index + 2] == 'c')
+			break;
+		TempFile[index] = FileName[index];
+		index++;
+		TempFile[index] = 0;
+	}
+	MYStrCat(TempFile, MYText("."));
+	MYStrCat(TempFile, TargetType);
+
+	return TempFile;
+}
 
 void RemoveDuplicateFiles()
 {
@@ -177,7 +198,7 @@ void RemoveDuplicateFiles()
 
 void ConverNCMFile()
 {
-	MYCout << "开始mp3转换" << endl;
+	MYCout << "开始ncm转换" << endl;
 	HANDLE hFile = 0;
 	WIN32_FIND_DATA wfd; //数据结构;
 	MYString p;
@@ -197,16 +218,21 @@ void ConverNCMFile()
 				TargetName = TargetName.append(MYText("\\")).append(wfd.cFileName);
 				if (IsTypeFile(wfd.cFileName, MYText("ncm")))
 				{//ncm文件
-					//检测对应的mp3文件是否存在
-					MYString mp3Name = MYString(DownloadPath).append(MYText("\\")).append(GetNCM_MP3Name(wfd.cFileName));
-					if (IsFileExist(mp3Name.c_str()))
-					{//mp3文件已经存在，不转换
-						MYCout << GetOutputString(mp3Name).c_str() << "已存在，不对ncm进行转换" << endl;
+					bool TargetExist = false;;
+					//检测对应的目标音乐文件是否存在
+					for (auto type : MusicFileType)
+					{
+						MYString TargetName = MYString(DownloadPath).append(MYText("\\")).append(GetNCM_TargetMusicFileName(wfd.cFileName, type.c_str()));
+						if (IsFileExist(TargetName.c_str()))
+						{//文件已经存在，不转换
+							MYCout << GetOutputString(TargetName).c_str() << "已存在，不对ncm进行转换" << endl;
+							TargetExist = true;
+							break;
+						}
 					}
-					else
-					{//mp3文件不存在，加入NCM转换队列
+					if(!TargetExist)
+						//mp3文件不存在，加入NCM转换队列
 						ConverTargetName.push_back(TargetName);
-					}
 				}
 
 			}
@@ -250,7 +276,7 @@ void CopyMusicFile()
 					SrcName = SrcName.append(MYText("\\")).append(wfd.cFileName);
 					if (!IsFileExist(TargetName.c_str()))
 					{
-						MYCout << GetOutputString(TargetName).c_str() << "不存在，开始拷贝" <<endl;
+						MYCout << GetOutputString(TargetName).c_str() << "不存在，开始拷贝" << endl;
 						if (CopyFile(SrcName.c_str(), TargetName.c_str(), true))
 						{
 							MYCout << "    拷贝文件" << GetOutputString(TargetName).c_str() << endl;
