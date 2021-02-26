@@ -27,6 +27,7 @@ get_allocator		  使用构造函数返回一个拷贝。
 c.insert(pos,elem)	  在pos位置插入一个elem拷贝，传回新数据位置。
 c.insert(pos,n,elem)  在pos位置插入n个elem数据。无返回值。
 c.insert(pos,beg,end) 在pos位置插入在[beg,end)区间的数据。无返回值。
+c.insert(pos,initializer_list) 在pos位置插入一个初始化列表
 c.max_size()		  返回容器中最大数据的数量。
 c.pop_back()		  删除最后一个数据。
 c.push_back(elem)	  在尾部加入一个数据。
