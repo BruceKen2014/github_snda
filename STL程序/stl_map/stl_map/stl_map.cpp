@@ -23,21 +23,31 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	map<string, string> feeling;	//心情和原因的关联
 	pair<map<string, string>::iterator, bool> ret;
+
+	//map插入
 	feeling.insert(pair<string, string>("啊开心","刚才拿到了一血！"));
 	ret = feeling.insert(pair<string, string>("悲剧","我擦，刚才被拿了一血！"));
 	if(ret.second)	
 		cout<<"插入成功！"<<endl;
+
+	//map插入
 	ret = feeling.insert(map<string, string>::value_type("感觉无敌","五杀！"));
 	if(ret.second)	
 		cout<<"插入成功！"<<endl;
 	feeling.insert(map<string, string>::value_type("愤怒","被队友卖了！"));
+
+	//map插入
 	feeling["霸气"] = "塔下强势反杀！";
 	feeling["绝望"] = "被破三路！";
+
+	//map遍历
 	map<string, string>::iterator it = feeling.begin();
 	for(; it != feeling.end(); it++)
 	{
 		cout<<"心情："<<(it->first)<<"~~~原因:"<<it->second<<endl;
 	}
+
+	//map查找
 	it = feeling.find("喜悦");
 	if(it != feeling.end())
 	{
@@ -46,8 +56,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	else
 		cout<<"没找到该心情";
 	cout<<endl;
+
+
 	it = feeling.find("霸气");
-	feeling.empty();
 	if(it != feeling.end())
 	{
 		cout<<"找到了 \"霸气\" 心情";
@@ -55,6 +66,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	else
 		cout<<"没找到该心情";
 	cout<<endl;
+
+	//map判空
+	feeling.empty();
+
 	if(feeling.count("悲剧"))
 		cout<<"找到了心情\"悲剧\""<<endl;
 

@@ -16,7 +16,7 @@ c.assign(n,elem)	  将n个elem的拷贝赋值给c。
 c.at(idx)             传回索引idx所指的数据，如果idx越界，抛出out_of_range。
 c.back()              传回最后一个数据，不检查这个数据是否存在。
 c.begin()			  传回迭代器重的可一个数据。
-c.capacity()		  返回容器中数据个数。
+c.capacity()		  返回容器中能够容纳的数据个数（和size不一样）。
 c.clear()			  移除容器中所有数据。
 c.empty()			  判断容器是否为空。
 c.end()				  指向迭代器中的最后一个数据地址。

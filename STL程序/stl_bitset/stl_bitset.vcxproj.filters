@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stl_array.cpp">
+    <ClCompile Include="stl_bitset.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
