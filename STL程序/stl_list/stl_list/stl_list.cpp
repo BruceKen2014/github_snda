@@ -7,104 +7,49 @@
 
 using namespace std;
 
-template<typename T>
-void print_list(list<T> lst)
-{
-	for(list<T>::iterator it = lst.begin(); it != lst.end(); it++)
-	{
-		cout<<*it<<" ";
-	}
-	cout<<endl;
-}
-
-template<typename T>
-void oppo_print(list<T> lst)
-{
-	cout<<"倒序输出:";
-	for(list<T>::reverse_iterator it = lst.rbegin(); it != lst.rend(); it++)
-	{
-		cout<<*it<<" ";
-	}
-	cout<<endl;
-}
-
 int _tmain(int argc, _TCHAR* argv[])
 {
-	list<int> lst1(9);
-	list<int> lst2(7, 3);
-	list<int> lst3(lst2);
-	cout<<"lst1:";
-	print_list(lst1);
-	cout<<"lst2:";
-	print_list(lst2);
-	cout<<"lst3:";
-	print_list(lst3);
+	
+	list<int> lst0;			//初始化，空链表
+	list<int> L1(9);		//初始化，有9个元素
+	list<int> L2(7, 3);		//初始化，有7个元素，全部用设置为3
+	list<int> lst3(L2);		//用别的链表初始化
 
-	cout<<"调用lst1.assign(3,4)之前,打印lst1如下"<<endl;
-	print_list(lst1);
-	cout<<"调用lst1.assign(3,4)之后,lst1:"<<endl;
-	lst1.assign(3,4);
-	print_list(lst1);
+	L1.assign(3, 4);					//重新分配值，包含3个元素，值全设为4
+	L1.assign(L2.begin(), L2.end());	//重新分配值，链表迭代器中间的元素
 
-	cout<<"调用语句lst1.assign(lst2.begin(), lst2.end())之后";
-	lst1.assign(lst2.begin(), lst2.end());
-	cout<<"\nlst1:";
-	print_list(lst1);
-	lst1.front() = 12;
-	print_list(lst1);
-	oppo_print(lst1);
+	L1.erase(L1.begin());//链表删除元素，传入参数的迭代器
 
-	cout<<*(lst1.erase(lst1.begin()))<<endl;
-	print_list(lst1);
-	lst1.remove(2);
-	cout<<"调用lst1.reverse()反转之前\nlst1:";
-	lst1.push_back(6);
-	lst1.push_back(9);
-	print_list(lst1);
-	cout<<"调用lst1.reverse()反转之后\nlst1:";
-	lst1.reverse();
-	print_list(lst1);
-	cout<<"调用st1.sort()之后\n";
-	lst1.sort(greater<int>());
-	cout<<"lst1:";
-	print_list(lst1);
-	cout<<"lst2:";
-	print_list(lst2);
-	lst1.sort();
-	lst2.sort();
-	cout<<"调用lst1.merge(lst2)之后"<<endl;
-	lst1.merge(lst2);
-	cout<<"lst1:";
-	print_list(lst1);
-	cout<<"lst2:";
-	print_list(lst2);
-	cout<<"调用语句lst2.splice(lst2.begin(),lst1)"<<endl;
-	list<int>::iterator iterator2 = lst2.begin(); 
-	lst2.splice(iterator2,lst1);  //iterator2指向并未变，这时虽然lst2有元素了，但iterator2还是指向尾部
-	cout<<"lst1:";
-	print_list(lst1);
-	cout<<"lst2:";
-	print_list(lst2);
-	cout<<"调用语句lst1.splice(lst1.begin(),lst2, lst2.begin()之后"<<endl;
-	lst1.splice(lst1.begin(),lst2, lst2.begin());	 
-	cout<<"lst1:";
-	print_list(lst1);
-	cout<<"lst2:";
-	print_list(lst2);   
-	cout<<"调用语句lst2.insert(lst2.begin(), lst2.begin(), lst2.end())之后"<<endl;
-	lst2.insert(lst2.begin(), lst2.begin(), lst2.end());
-	print_list(lst2);
-	cout<<"调用语句print_list(lst2)之后"<<endl;
-	lst2.swap(lst1);
-	cout<<"lst1:";
-	print_list(lst1);
-	cout<<"lst2:";
-	print_list(lst2);  
+	L1.front() = 2;		//获取&设置链表首元素
+	L1.back() = 2;		//获取&设置链表首元素	
+	L1.push_back(6);	//链表追加元素，push_back追加在尾部
+	L1.push_back(7);	//链表追加元素，push_back追加在尾部
+	L1.remove(2);		//链表删除元素，传入参数为元素的值，所有匹配这个值的元素都将被删除
+	L1.remove_if([](int v) -> bool { return v >= 6 && v <= 7; });//链表删除元素，自定义表达式/函数，所有匹配的元素都将被删除
 
-	cout<<"调用语句lst1.unique()之后"<<endl;
-	lst1.unique();
-	cout<<"lst1:";
-	print_list(lst1);
+	int Size = L1.size(); //返回链表元素个数
+	L1.pop_front();		  //删除首元素
+	L1.pop_back();        //删除尾元素
+	L2.clear();			  //置空，即删除所有元素
+	L1.reverse();		  //链表翻转
+	
+	L1.sort(greater<int>());//链表排序
+	L2.sort();				//链表排序，默认升序，即按照<排序
+
+	L1.sort();L1.merge(L2);	//链表合并，并排序，合并后L2清空，要求L1必须<有序，否则报错
+
+	L2.push_back(8);
+	list<int>::iterator iterator2 = L2.begin(); 
+	L2.splice(iterator2,L1);			  //链表切割，在指定的位置插入其他链表，插入后其他链表置为空，操作后iterator2指向并未变，还是指的8
+	L1.splice(L1.begin(), L2, L2.begin());//链表切割，在指定位置切入其他链表的迭代器指向的值，其他链表的这个值被切除	 	
+
+	
+	L2.insert(L2.begin(), L2.begin(), L2.end());//链表插入，用其他链表的迭代器范围
+	L2.swap(L1);//链表交换
+
+
+
+	L1.unique();  //删除相邻重复元素
 
 	return 0;
 }

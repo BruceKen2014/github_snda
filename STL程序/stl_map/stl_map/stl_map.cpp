@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 template<typename T1, typename T2>
 void print_map(std::map<T1, T2> m)
 {
@@ -46,6 +45,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		cout<<"心情："<<(it->first)<<"~~~原因:"<<it->second<<endl;
 	}
+	//map遍历
+	for (auto pair : feeling)
+	{
+		cout << "心情：" << (pair.first) << "~~~原因:" << pair.second << endl;
+	}
 
 	//map查找
 	it = feeling.find("喜悦");
@@ -68,12 +72,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout<<endl;
 
 	//map判空
-	feeling.empty();
+	if (feeling.empty())
+		cout << "map is empty" << endl;
 
 	if(feeling.count("悲剧"))
 		cout<<"找到了心情\"悲剧\""<<endl;
 
 	feeling.insert(pair<string, string>("畅快","哥20杀0死，哈哈！"));
+
+	//map删除
 	it = feeling.find("喜悦");
 	if(it != feeling.end())
 	{
@@ -84,6 +91,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		cout<<"没找到喜悦心情";
 	cout<<endl;
 	print_map(feeling);
+
 	it = feeling.find("畅快");
 	if(it != feeling.end())
 	{

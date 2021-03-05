@@ -13,7 +13,7 @@ using namespace std;
 .*    任一字符0个或多个
 .?    任一字符0个或1个
 \w    任一字符
-\d    任一数字字符
+\d    任一数字字符(实际使用的时候要用\\d，\本身需要转义一下)
 \d{3} 匹配一个3位数的十进制数
 [ab]  匹配"abc"集中的任一字符
 [^ab] 匹配不在"abc"集中的任一字符
@@ -29,6 +29,7 @@ smatch.suffix()			一个ssub_match对象,表示当前匹配之后的序列(查�
 void test_regex();		//单纯地查找一个字符串
 void check_filename();	//测试文件是否是指定类型的文件
 void find_words();		//查找指定字符串中符合某表达式的单词
+void replace_words();   //查找指定字符串,并将替换为另外格式的字符串
 
 
 //判断文件是否是type类型的文件,如filename=123.mp3 type=mp3
@@ -42,6 +43,7 @@ int main()
 	test_regex();
 	check_filename();
 	find_words();
+	replace_words();
     std::cout << "Hello World!\n";
 }
 
@@ -94,4 +96,17 @@ bool IsTypeFile(string filename, string type)
 
 	bool Ret = regex_search(filename, search_result, reg);
 	return Ret;
+}
+
+void replace_words()
+{
+	//把电话号码的格式替换为xxx-xxx-xxxxxxx
+	regex reg_find(string("[:](\\d{3})[-.]?(\\d{3})[-](\\d{7})"));
+	string target_str("Lucy:088.626-4852321 Books:3 Lily:098626-4852321 Books:9");
+	string format(":$1-$2-$3");
+
+	smatch search_result;
+	bool Ret2 = regex_search(target_str, search_result, reg_find);
+
+	string Ret = regex_replace(target_str, reg_find, format);
 }
