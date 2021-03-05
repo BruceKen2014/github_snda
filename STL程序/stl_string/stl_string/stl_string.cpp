@@ -21,6 +21,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	string str1("this is the first try string !");
 	string str2(10, 'q');
 	string str3 = "copy instructer";
+	const char* c_str = "const char* ";
+	string str4(c_str, 3);	 //c_str的前3个字符赋值给str4
+	string str5(str3, 2);	 //将str3从第2个index开始的字符串赋值给str5
+	string str6(str3, 2, 5); //将str3从第2个index开始的5个字符串赋值给str6
+
 
 	//下标访问字符
 	auto c1 = str1[2];
@@ -47,7 +52,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//cin 读取到string
 	getline(cin, str1);
 
-	//assign重新赋值，注意是重新复制，而不是追加
+	//assign重新赋值，注意是重新赋值，而不是追加
 	str1.assign("new string ~");
 	str1.assign("new string ~", 6); //复制6个字符
 	str1.assign(string("another new string ~"));
@@ -63,33 +68,49 @@ int _tmain(int argc, _TCHAR* argv[])
 	str1.append(5, 'l');
 
 	//string判断是否相等
-	bool equal = str1 == str2;
+	bool equal  = str1 == str2;
 	bool equal2 = str1.compare(str3)==0;
-	
+	bool equal3 = str1.compare(2, 3, str3) == 0;		  //将str1的第2个位置开始的3个字符与str3比较
+	bool equal4 = str1.compare(2, 3, str3, 1, 4) == 0;//将str1的第2个位置开始的3个字符与str3的第1个位置开始的4个字符比较
+
 	//子字符串，从位置5开始，长度为10的子字符串
 	string sub_str = str1.substr(5, 10);
 
 	//swap交换string内容
 	str1.swap(str2);
 
-	//查找字符
+	//查找字符第一次出现的位置
 	auto c_index = str1.find('d');
 	if (c_index != str1.npos)
-	{
-		//找到
+	{//找到
+	}
+	//查找字符最后一次(倒数第一次)出现的位置
+	c_index = str1.rfind('d');
+	if (c_index != str1.npos)
+	{//找到
 	}
 
-	//查找字符串
+	//查找字符串第一次出现的位置
 	auto str_index = str2.find("aa");
 	if (str_index != str1.npos)
-	{
-		//找到
+	{//找到
+	}
+	//查找字符串最后一次(倒数第一次)出现的位置
+	str_index = str2.rfind("aa");
+	if (str_index != str1.npos)
+	{//找到
 	}
 
+	
+	auto index = str1.find_first_of(str2,2); //在str1中查找str2集合中任何一个字符第一次出现的index,第2个参数可以选，表示从第几个index开始查起
+	index = str1.find_last_of(str2);		 //在str1中查找str2集合中任何一个字符最后一次出现的index
+	index = str1.find_first_not_of(str2,2);  //在str1中查找非str2集合中的字符第一次出现的index,第2个参数可以选，表示从倒数第几个index开始查起
+	index = str1.find_last_not_of(str2);     //在str1中查找非str2集合中的字符最后一次出现的index
+
 	//replace替换
-	str2.replace(2, 4,"Bruce");
-	str2.replace(2, 5,"Bruce", 4);
-	str2.replace(2, 5, 5, 'G');
+	str2.replace(2, 4,"Bruce");    //将str第2个字符开始的4个字符替换为Bruce
+	str2.replace(2, 5,"Bruce", 4); //将str第2个字符开始的5个字符替换为Bruce的前4个字符
+	str2.replace(2, 5, 5, 'G');    //将str第2个字符开始的5个字符替换为5个G字符
 
 	//insert
 	str2.insert(2, "server");    //第2个index插入字符串
@@ -97,7 +118,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	str2.insert(2, 5, 't');		 //第2个index插入5个字符
 	
 	//erase
-	str2.erase(2, 20); //第2个index删除20个字符
+	str2.erase(2, 20); //删除从第2个字符开始的20个字符，如果20不传，则删除2之后的所有
 
 	//基础数据类型和string互相转换
 	int Int1 = 100;

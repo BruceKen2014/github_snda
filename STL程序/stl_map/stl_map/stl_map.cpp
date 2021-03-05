@@ -42,34 +42,19 @@ int _tmain(int argc, _TCHAR* argv[])
 	//map遍历
 	map<string, string>::iterator it = feeling.begin();
 	for(; it != feeling.end(); it++)
-	{
 		cout<<"心情："<<(it->first)<<"~~~原因:"<<it->second<<endl;
-	}
 	//map遍历
 	for (auto pair : feeling)
-	{
 		cout << "心情：" << (pair.first) << "~~~原因:" << pair.second << endl;
-	}
 
 	//map查找
 	it = feeling.find("喜悦");
 	if(it != feeling.end())
-	{
 		cout<<"找到了 \"喜悦\" 心情";
-	}
-	else
-		cout<<"没找到该心情";
-	cout<<endl;
-
 
 	it = feeling.find("霸气");
 	if(it != feeling.end())
-	{
 		cout<<"找到了 \"霸气\" 心情";
-	}
-	else
-		cout<<"没找到该心情";
-	cout<<endl;
 
 	//map判空
 	if (feeling.empty())
@@ -83,29 +68,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	//map删除
 	it = feeling.find("喜悦");
 	if(it != feeling.end())
-	{
-		cout<<"查找到了心情喜悦，将该心情删除";
 		feeling.erase(it);
-	}
-	else
-		cout<<"没找到喜悦心情";
-	cout<<endl;
-	print_map(feeling);
-
-	it = feeling.find("畅快");
-	if(it != feeling.end())
-	{
-		cout<<"查找到了心情畅快，将该心情删除";
-		feeling.erase(it);
-	}
-	else
-		cout<<"没找到喜悦心情";
-	cout<<endl;
-	print_map(feeling);
-	cout<<"删除心情霸气"<<endl;
 	if(feeling.erase("霸气") == 0)
 		cout<<"删除成功"<<endl;
-	print_map(feeling);
+
+
 	cout<<(feeling.lower_bound("啊开心"))->first<<endl;
 	it= (feeling.upper_bound("不"));
 	if(it == feeling.end())

@@ -27,6 +27,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stl_regex", "stl_regex\stl_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "function_library", "function_library\function_library.vcxproj", "{CFEB77F2-3565-47BE-AC84-04C4EBC6366C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stl_deque", "stl_deque\stl_deque.vcxproj", "{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +123,14 @@ Global
 		{CFEB77F2-3565-47BE-AC84-04C4EBC6366C}.Release|x64.Build.0 = Release|x64
 		{CFEB77F2-3565-47BE-AC84-04C4EBC6366C}.Release|x86.ActiveCfg = Release|Win32
 		{CFEB77F2-3565-47BE-AC84-04C4EBC6366C}.Release|x86.Build.0 = Release|Win32
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Debug|x64.ActiveCfg = Debug|x64
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Debug|x64.Build.0 = Debug|x64
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Debug|x86.ActiveCfg = Debug|Win32
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Debug|x86.Build.0 = Debug|Win32
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Release|x64.ActiveCfg = Release|x64
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Release|x64.Build.0 = Release|x64
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Release|x86.ActiveCfg = Release|Win32
+		{6AEC9FA3-D32A-4C68-B4AF-4EFEE21BF7F1}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

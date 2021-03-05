@@ -32,7 +32,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	L1.pop_back();        //删除尾元素
 	L2.clear();			  //置空，即删除所有元素
 	L1.reverse();		  //链表翻转
-	
+
+	//查找
+	list<int>::iterator ite = find(L1.begin(), L1.end(), 5);
+	if (ite != L1.end())
+		cout << "找到" << endl;
+
 	L1.sort(greater<int>());//链表排序
 	L2.sort();				//链表排序，默认升序，即按照<排序
 

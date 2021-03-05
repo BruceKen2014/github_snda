@@ -28,27 +28,21 @@ array<int, 10> testArray2{3,2,10}; 这种方式用初始化列表里的值去填
 void printArray1(const array<int, 10>& Array)
 {
 	for (auto ite = Array.begin(); ite != Array.end(); ++ite)
-	{
 		cout << *ite << " " ;
-	}
 	cout << endl;
 }
 
 void printArray2(const array<int, 10>& Array)
 {
 	for (auto Data: Array)
-	{
 		cout << Data << " ";
-	}
 	cout << endl;
 }
 
 void printArray3(const array<int, 10>& Array)
 {
 	for (decltype(Array.size()) i = 0; i < Array.size(); ++i)
-	{
 		cout << Array[i]<< " ";
-	}
 	cout << endl;
 }
 
@@ -57,7 +51,7 @@ int main()
 {
 	array<int, 10> testArray;
 
-	//将数组里的数据全部重置为9
+	//将数组里的数据全部填充为9
 	testArray.fill(9);
 
 	//获取某个索引的值
@@ -67,19 +61,21 @@ int main()
 	Data1 = testArray.front();
 	Data1 = testArray.back();
 
-	printArray1(testArray);
-
+	//将数组全部填充为8
 	testArray.fill(8);
-	printArray2(testArray);
 
 	//获取数组大小
 	auto ArraySize = testArray.size();
 
 	array<int, 10> testArray2{3,2,10};
 
+	//查找
+	array<int, 10>::iterator ite = find(testArray2.begin(), testArray2.end(), 5);
+	if (ite != testArray2.end())
+		cout << "找到" << endl;
+
 	//array交换
 	testArray2.swap(testArray);
-	printArray3(testArray2);
 
 	//获取数组的数据指针
 	int* ArrayPointer = testArray2.data();

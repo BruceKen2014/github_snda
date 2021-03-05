@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 
 using namespace std;
@@ -54,80 +55,55 @@ void print_vector(vector<T> &vec)
 }
 int _tmain(int argc, _TCHAR* argv[])
 {
+	//vector初始化
 	vector<int> v1;
-	vector<int> v2;
-	vector<int>::iterator it;
-	v1.push_back(10);
-	v1.push_back(20);
-	v1.push_back(30);
-	v1.push_back(40);
-	v2 = v1;
+	vector<int> v2 {10, 50, 30, 40};
+	vector<int> v3 = {60, 20, 90};
+	vector<int> v4(v2);
+	vector<int> v5 = v2;
+	vector<int> v6(6);   //vector包含了6个int。默认为0
+	vector<int> v7(6,8); //vector包含了6个8
 
-	v2.push_back(50);
-	v2.push_back(70);
-	v2.push_back(80);
-	v2.push_back(90);
-	cout<<"v1初始数据:";
-	print_vector(v1);
-	cout<<"v2初始数据:";
-	print_vector(v2);
+	//vector添加元素push_back
+	v2.push_back(36);	 
 
-	cout<<"调用语句v2.assign(v1.begin(), v1.end())后"<<endl;
-	v2.assign(v1.begin(), v1.end());  
-	cout<<"v1:";
-	print_vector(v1);
-	cout<<"v2:";
-	print_vector(v2);
+	//查找，调用find全局函数
+	vector<int>::iterator ite = find(v2.begin(), v2.end(), 20);
 
-	cout<<"调用语句v2.assign(v1.begin(),  v1.begin()+1)后"<<endl;
+	//退回多余的申请的空间
+	v2.shrink_to_fit();
+
+	//vector排序
+	sort(v2.begin(), v2.end(), [](int a, int b) -> bool { return a > b; });
+	
+	int size = v2.size();		  //vector大小
+	int capacity = v2.capacity(); //vector已申请的空间
+	//assign赋值
+	v2.assign(v3.begin(), v3.end());
 	v2.assign(v1.begin(), v1.begin()+1);  
-	cout<<"v1:";
-	print_vector(v1);
-	cout<<"v2:";
-	print_vector(v2);
 
-	int& temp = v2.back();	 //back()返回的是一个引用
-	temp = 3;
-	print_vector(v2);
+	v2.back() = 3;	 //back()返回的是一个引用
+	v2.front() = 12;
 
-	it = v1.end()- 1; 
-	cout<<*it<<endl;
+	//删除元素
+	vector<int>::iterator it = v1.end()- 1;
 	it = v1.erase(it);	 //该语句必须调用，否则it会沦为野指针
 	if(it == v1.end())
 		cout<<"删除的是最后一个元素"<<endl;
-	else
-		cout<<*it<<endl;
+
+	//在指定的iterator处插入元素
 	it = v2.insert(v2.begin(), 5);
-	cout<<*it<<endl;
-	print_vector(v2);
-	v2.insert(v2.begin()+1, 4, 88);
-	print_vector(v2);
+	v2.insert(v2.begin()+1, 4, 88);		//插入4个88
 	v2.insert(v2.begin()+1, v1.begin(), v1.end());
-	print_vector(v2);
-	cout<<"当前v2.size() = "<<v2.size()<<endl;
+
+	//删除（弹出）最后一个元素
 	v2.pop_back();
-	cout<<"执行v2.pop_back()之后, v2.size() = "<<v2.size()<<endl;
+	
+	v2.resize(40);	//重新指定v2的长度为40
+	v2.resize(9, 5);//重新指定v2的长度为9
 
-	cout<<"重新指定v2的长度为40，输出v2"<<endl;
-	v2.resize(40);
-	print_vector(v2);
-	cout<<"重新指定v2的长度为6，输出v2"<<endl;
-	v2.resize(6);
-	print_vector(v2);
-	cout<<"调用v2.resize(9, 5),输出v2"<<endl;
-	v2.resize(9, 5);
-	print_vector(v2);
-
-	cout<<"调用v1.swap(v2)之前\nv1:";
-	print_vector(v1);
-	cout<<"v2:";
-	print_vector(v2);
-
-	cout<<"调用v1.swap(v2)之后\nv1:";
+	//数组交换
 	v1.swap(v2);
-	print_vector(v1);
-	cout<<"v2:";
-	print_vector(v2);
 
 
 
