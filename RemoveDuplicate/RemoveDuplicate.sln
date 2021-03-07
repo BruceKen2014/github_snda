@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RemoveDuplicate", "RemoveDu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WyyToMyFolder", "WyyToMyFolder\WyyToMyFolder.vcxproj", "{640A5A54-931C-423B-BDA3-DC1012904138}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NormalTry", "NormalTry\NormalTry.vcxproj", "{B52C77EF-4BFB-4D59-B1AB-91841E697850}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{640A5A54-931C-423B-BDA3-DC1012904138}.Release|x64.Build.0 = Release|x64
 		{640A5A54-931C-423B-BDA3-DC1012904138}.Release|x86.ActiveCfg = Release|Win32
 		{640A5A54-931C-423B-BDA3-DC1012904138}.Release|x86.Build.0 = Release|Win32
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Debug|x64.ActiveCfg = Debug|x64
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Debug|x64.Build.0 = Debug|x64
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Debug|x86.ActiveCfg = Debug|Win32
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Debug|x86.Build.0 = Debug|Win32
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Release|x64.ActiveCfg = Release|x64
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Release|x64.Build.0 = Release|x64
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Release|x86.ActiveCfg = Release|Win32
+		{B52C77EF-4BFB-4D59-B1AB-91841E697850}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

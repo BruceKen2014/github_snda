@@ -75,3 +75,11 @@ UpgradeLog.XML
 /STL程序/stl_vector/stl_vector/Debug
 /STL程序/stl_string/stl_string/Debug
 /STL程序/stl_set/stl_set/Debug
+
+
+
+
+!ffmpeg.exe
+!ncmDump.exe
+!ncmDumpGUI.exe
+
