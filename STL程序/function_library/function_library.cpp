@@ -1,63 +1,193 @@
-﻿// function_library.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
+﻿
 
-#include <iostream>
-#include <string>
 #include <regex>
-
-using namespace std;
-//判断文件是否是type类型的文件,如filename=123.mp3 type=mp3
-bool IsTypeFile(string filename, string type);
-
-//过滤掉源字符串中的敏感词
-//src_str源字符串，如邓小平是大坏蛋，六四杀了很多人
-//censor_words敏感词，如={邓,小,平}
-//返回string如 ***是大坏蛋，六四杀了很多人 //这里的六四需要再进行一波处理
-bool CensorWord(string src_str, string& out_str, const vector<string>& censor_words);
+#include <windows.h>
+#include "function_library.h"
 
 
-int main()
+bool function_library::IsTypeFile(const MYString& filename, const MYString& type)
 {
-	string out_str;
-	CensorWord("邓邓小的才平是大坏蛋", out_str, { "邓", "小", "平"});
-	CensorWord("dengxiao的才ping是大坏蛋", out_str, { "deng", "xiao", "ping" });
-    std::cout << "Hello World!\n";
+	auto index = filename.find(type);
+	return index != filename.npos;
 }
 
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门使用技巧: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
-bool IsTypeFile(string filename, string type)
+bool function_library::IsTypesFile(const MYString& filename, const vector<MYString>& types)
 {
-	regex reg(string("(.+)\\.") + type + string("$"), regex_constants::icase); //忽略大小写
-	smatch search_result;
+	for (auto type : types)
+	{
+		if (IsTypeFile(filename, type))
+			return true;
+	}
+	return false;
+}
 
+void function_library::SplitStr(const MYString& str, MYChar split_char, vector<MYString> &out)
+{
+	MYChar* pt = (MYChar*)str.c_str();
+	MYChar* begin = pt;
+	MYChar* end = MYStrChr(pt, split_char);
+	while (end != NULL)
+	{
+		MYString temp;
+		temp.insert(0, begin, end - begin);
+		out.push_back(temp);
+		begin = end + 1;
+		end = MYStrChr(begin, split_char);
+	}
+	if (end == NULL && begin != NULL)
+	{
+		MYString temp;
+		temp.insert(0, begin, pt + str.size() - begin);
+		out.push_back(temp);
+	}
+}
 
-	bool Ret = regex_search(filename, search_result, reg);
+std::string function_library::GetOutputString(MYString str)
+{
+#ifdef _UNICODE
+	DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, str.c_str(), -1, NULL, 0, NULL, FALSE);
+
+	char psText[128];
+	memset(psText, 0, 128);
+	WideCharToMultiByte(CP_OEMCP, NULL, str.c_str(), -1, psText, dwNum, NULL, FALSE);
+	return string(psText);
+#else
+	return str;
+#endif
+}
+
+MYString function_library::ReplaceFileNameSuffix(const MYString& FileName, const MYString& TargetType)
+{
+	MYRegex reg_find(MYString(MYText("(.*)\\.(.*)$")));
+	MYString target_str(FileName);
+
+	MYString format(MYText("$1"));
+
+	MYString TempTargetType = TargetType;
+
+	//进行一层处理，如果传入的类型不带.，则我们要加上一个.
+	if (TempTargetType.find(TEXT(".")) == TempTargetType.npos)
+		TempTargetType = TEXT(".") + TempTargetType;
+	format.append(TempTargetType);
+
+	MYSMatch search_result;
+	MYString Ret = regex_replace(target_str, reg_find, format);
+
 	return Ret;
 }
 
-bool CensorWord(string src_str, string& out_str, const vector<string>& censor_words)
+MYString function_library::GetPureFileName(const MYChar* FileName)
+{
+	MYString Temp(FileName);
+	auto index = Temp.find_last_of('\\');
+	MYString substr = Temp.substr(index + 1);
+	return substr;
+}
+
+MYString function_library::GetPureFilePath(const MYChar* FileName)
+{
+	MYString Temp(FileName);
+	auto index = Temp.find_last_of('\\');
+	MYString substr = Temp.substr(0,index);
+	return substr;
+}
+
+bool function_library::IsFileExist(const MYString& FileName)
+{
+	return MYAccess(FileName.c_str(), 0) == 0;
+}
+
+void function_library::GetDirectoryFiles(const MYString& FolderPath, vector<pair<MYString, MYString>>& FileNames, const vector<MYString>& Types, bool Children /*= true*/)
+{
+	HANDLE hFile = 0;
+	WIN32_FIND_DATA wfd; //数据结构;
+	MYString p;
+	hFile = FindFirstFile(p.assign(FolderPath).append(MYText("\\*")).c_str(), &wfd);
+	int count = 0;
+	if (hFile != INVALID_HANDLE_VALUE)
+	{//find
+		do
+		{
+			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{//文件夹
+				if (Children)
+				{//递归扫描
+					MYString TempFolderName = wfd.cFileName;
+					if (TempFolderName.find(MYChar('.')) == TempFolderName.npos)
+						function_library::GetDirectoryFiles(FolderPath + MYText("\\") + wfd.cFileName, FileNames, Types, Children);
+				}
+
+			}
+			else
+			{//文件
+				if (Types.size() == 0 || IsTypesFile(wfd.cFileName, Types))
+					FileNames.push_back({ FolderPath, MYString(wfd.cFileName) });
+			}
+		} while (FindNextFile(hFile, &wfd));
+	}
+}
+
+void function_library::DeleteDirectoryFiles(const MYString& FolderPath, const vector<MYString>& Types, 
+	bool Children, bool Folder, bool Root, int Stage)
+{
+	HANDLE hFile = 0;
+	WIN32_FIND_DATA wfd; //数据结构;
+	MYString p;
+	hFile = FindFirstFile(p.assign(FolderPath).append(MYText("\\*")).c_str(), &wfd);
+	int count = 0;
+	if (hFile != INVALID_HANDLE_VALUE)
+	{//find
+		do
+		{
+			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+			{//文件夹
+				if (Children)
+				{//迭代
+					MYString TempFolderName = wfd.cFileName;
+					if (TempFolderName.find(MYChar('.')) == TempFolderName.npos)
+						function_library::DeleteDirectoryFiles(FolderPath + MYText("\\") + wfd.cFileName, Types, Children, Folder, Root, Stage+1);
+				}
+			}
+			else
+			{//文件
+				if (Types.size() == 0 || IsTypesFile(wfd.cFileName, Types))
+				{
+					MYString RemoveFileName = FolderPath;
+					RemoveFileName = RemoveFileName.append(MYText("\\")).append(wfd.cFileName);
+					DeleteFile(RemoveFileName.c_str());
+				}
+			}
+		} while (FindNextFile(hFile, &wfd));
+	}
+	FindClose(hFile);
+	if (Folder)
+	{//删除文件夹
+		if (Stage == 1)
+		{
+			if (Root)
+				RemoveDirectory(FolderPath.c_str());
+		}
+		else
+		{
+			RemoveDirectory(FolderPath.c_str());
+		}
+	}
+}
+
+bool function_library::CensorWord(const MYString& src_str, MYString& out_str, const vector<MYString>& censor_words)
 {
 	//本来想用regex来处理，后来发现没必要，只用string本身的函数处理就足够了
-	string ret = src_str;
+	MYString ret = src_str;
 
 	for (auto word : censor_words)
 	{
 		//对敏感词一个个扫描替换，一旦没有查找到其中一个，则返回false
 		auto index = ret.find(word);
-		if(index != ret.npos)
+		if (index != ret.npos)
 		{
-			string replace_str;
+			MYString replace_str;
 			for (decltype(word.length()) i = 0; i < word.length(); ++i)
-				replace_str += '*';
+				replace_str += MYText("*");
 			while (index != ret.npos)
 			{
 				ret.replace(index, word.length(), replace_str);
@@ -72,3 +202,4 @@ bool CensorWord(string src_str, string& out_str, const vector<string>& censor_wo
 	out_str = ret;
 	return true;
 }
+
