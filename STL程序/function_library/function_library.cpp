@@ -2,6 +2,7 @@
 
 #include <regex>
 #include <windows.h>
+#include <corecrt_io.h>
 #include "function_library.h"
 
 
@@ -90,6 +91,68 @@ MYString function_library::GetPureFilePath(const MYChar* FileName)
 	auto index = Temp.find_last_of('\\');
 	MYString substr = Temp.substr(0,index);
 	return substr;
+}
+
+void function_library::ReadFileToStringArray(const MYString& FileName, vector<MYString>& StringArray)
+{
+	StringArray.clear();
+	FILE* pFile = nullptr;
+	MYfopen(&pFile, FileName.c_str(), MYText("rb"));
+	if (pFile == nullptr)
+		return;
+	MYChar LineText[1024];
+	while(1)
+	{
+		memset(LineText, 0, sizeof(LineText));
+		void* pOver = MYfgets(LineText, sizeof(LineText)/sizeof(MYChar), pFile);
+		function_library::ReadStringEnd_r_n(LineText);
+		int TextLen = MyStrLen(LineText);
+		if(TextLen > 0)
+			StringArray.push_back(LineText);
+		if (pOver == nullptr)
+			break;
+	}
+	if (pFile != nullptr)
+		fclose(pFile);
+}
+
+void function_library::WriteStringArrayToFile(const MYString& FileName, const vector<MYString>& StringArray, const MYString SplitStr)
+{
+	if (StringArray.size() == 0)
+		return;
+
+	FILE* pFile = nullptr;
+	MYfopen(&pFile, FileName.c_str(), MYText("wb+"));
+	if (pFile == nullptr)
+		return;
+	int charsize = sizeof(MYChar);
+	for (decltype(StringArray.size()) i = 0; i < StringArray.size(); ++i)
+	{
+		fwrite(StringArray[i].c_str(), sizeof(MYChar), StringArray[i].length(), pFile);
+		if (i != StringArray.size() - 1)
+		{
+			fwrite(SplitStr.c_str(), sizeof(MYChar), SplitStr.length(), pFile);
+		}
+	}
+	if (pFile != nullptr)
+		fclose(pFile);
+}
+
+void function_library::ReadStringEnd_r_n(MYChar* String)
+{
+	if (String == nullptr)
+		return;
+
+	int Len = MyStrLen(String);
+	if (Len == 0)
+		return;
+	if (String[Len - 1] == '\n')
+		String[Len - 1] = 0;
+	Len = MyStrLen(String);
+	if (Len == 0)
+		return;
+	if (String[Len - 1] == '\r')
+		String[Len - 1] = 0;
 }
 
 bool function_library::IsFileExist(const MYString& FileName)

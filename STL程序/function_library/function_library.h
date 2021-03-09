@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+
 using namespace std;
 
 #ifdef _UNICODE
@@ -15,6 +16,8 @@ using MYSMatch = smatch;
 #define MYStrCat wcscat
 #define MYAccess _waccess
 #define MYSystem _wsystem
+#define MYfopen  _wfopen_s
+#define MYfgets  fgetws
 #define MYCout  cout
 #else
 typedef  char MYChar;
@@ -28,6 +31,8 @@ using MYSMatch = wsmatch;
 #define MYStrCat strcat
 #define MYAccess _access
 #define MYSystem system
+#define MYfopen  fopen_s
+#define MYfgets  fgets
 #define MYCout  cout
 
 #endif
@@ -61,6 +66,14 @@ public:
 	static MYString GetPureFileName(const MYChar* FileName);
 	//获取带路径文件名的纯路径名,如C:\\hello\\1.txt转换为C:\\hello
 	static MYString GetPureFilePath(const MYChar* FileName);
+
+	//读取一个文本文件，将内容以行为单位，读取到字符串数组中
+	static void ReadFileToStringArray(const MYString& FileName, vector<MYString>& StringArray);
+	//将字符串数组写入到一个文本文件中,默认以\r\n分割字符串
+	static void WriteStringArrayToFile(const MYString& FileName, const vector<MYString>& StringArray, const MYString SplitStr=MYText("\r\n"));
+
+	//删除一个字符串末尾的\r \n
+	static void ReadStringEnd_r_n(MYChar* String);
 
 	//该文件是否存在
 	static bool IsFileExist(const MYString& FileName);

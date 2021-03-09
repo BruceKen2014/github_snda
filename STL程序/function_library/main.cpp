@@ -29,6 +29,12 @@ int main()
 	MYString PureName = function_library::GetPureFileName(MYText("D:\\Github\\github_snda\\12.obj"));
 	MYString PurePath = function_library::GetPureFilePath(MYText("D:\\Github\\github_snda\\12.obj"));
 
+	vector<MYString>  TextContent;
+	function_library::ReadFileToStringArray(MYText("输出文件.txt"), TextContent);
+
+	vector<MYString> WriteContent {MYText("dddd"),MYText("中国队") };
+	function_library::WriteStringArrayToFile(MYText("输出文件.txt"), WriteContent);
+
 	std::cout << "Hello World!\n";
 }
 

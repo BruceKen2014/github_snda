@@ -10,30 +10,10 @@
 #include <regex>
 #include <utility>
 
+#include "function_library.h"
+
 
 using namespace std;
-
-#ifdef _UNICODE
-typedef  wchar_t MYChar;
-typedef  wstring MYString;
-#define MYText(txt) L##txt
-#define MyStrLen wcslen
-#define MYStrChr wcschr
-#define MYStrCat wcscat
-#define MYAccess _waccess
-#define MYSystem _wsystem
-#define MYCout  cout
-#else
-typedef  char MYChar;
-typedef  string MYString;
-#define MYText(txt) txt
-#define MyStrLen strlen
-#define MYStrChr strchr
-#define MYStrCat strcat
-#define MYAccess _access
-#define MYSystem system
-#define MYCout  cout
-#endif
 
 /*
 1、扫描QQ音乐下载文件夹里面的文件，判读名字是否在我们的库里面能够找到，如果能够找到，说明音乐文件已存在，跳过，如果找不到，进行第2步
@@ -50,14 +30,15 @@ typedef  string MYString;
 
 */
 
-
-
-//判断filename的后缀类型是否是Type
-bool IsTypeFile(const MYString& filename, const MYString& Type);
 //判断filename是否是需要拷贝的音乐文件
 bool IsMusicTypeFile(const MYChar* filename);
 //判断filename是否是QQ音乐的加密文件
 bool IsMusicCompressTypeFile(const MYChar* filename);
+//判断filename是否在过滤列表中
+bool IsFilterFile(const MYString& filename);
+
+
+
 //替换文件的后缀名
 MYString ReplaceFileNameSuffix(const MYChar* FileName, const MYChar* TargetType);
 
@@ -94,7 +75,7 @@ vector<pair<MYString, MYString> > AllMusicFile;
 vector<MYString> MusicFileType;
 vector<MYString> QQMusicCompressType;
 vector<pair<MYString, MYString>> CopyTempTargetName;
-
+vector<MYString> FilterFileNames;
 int main()
 {
 	GetCurrentDirectory(128, curr_dir);
@@ -121,6 +102,9 @@ int main()
 	GetPrivateProfileString(MYText("setting"), MYText("QQMusicCompressType"), MYText(""), Temp, 128, InitPath.c_str());
 	SplitStr(Temp, ',', QQMusicCompressType);
 
+	//读取过滤文件
+	function_library::ReadFileToStringArray(MYText("过滤文件.txt"), FilterFileNames);
+
 	//扫描QQ音乐的下载路径里面所有的音乐文件
 	MYCout << "扫描QQ音乐下载路径中的文件..." << endl;
 	ScanAllMusicFile(QQDownloadPath);
@@ -133,8 +117,15 @@ int main()
 	{//有需要解密的文件
 		cout << "请进行解密操作，解密成功后随便输入一个字符，然后回车触发文件拷贝..............." << endl;
 		cin >> Ret;
+		
+		//解密完成，扫描是否有解密失败的文件，如果有，则将失败的文件名记录到过滤文件中
+		//这个目的是，防止以后每次都扫描非法文件进行解密
+
 		//解密过程完成后，在此输入一次，触发第二次的文件拷贝
 		CopyMusicFileSecond();
+
+		//将解密失败的文件名加入到过滤列表中
+		function_library::WriteStringArrayToFile(MYText("过滤文件.txt"), FilterFileNames);
 
 		MYCout << "开始删除中间文件" << endl;
 
@@ -145,23 +136,20 @@ int main()
 	}
 	else
 	{
-		cout << "没有需要解密的文件" << endl;
+		std::MYCout << "没有需要解密的文件" << endl;
 	}
+	for (auto filterName : FilterFileNames)
+		std::MYCout << "过滤文件有：" << GetOutputString(filterName) << endl;
+	std::MYCout << "press any key to continue!\n";
 	cin >> Ret;
-	std::MYCout << "Hello World!\n";
-}
-
-bool IsTypeFile(const MYString& filename, const MYString& Type)
-{
-	auto index = filename.find(Type);
-	return index != filename.npos;
+	
 }
 
 bool IsMusicTypeFile(const MYChar* filename)
 {
 	for (auto Type : MusicFileType)
 	{
-		if (IsTypeFile(filename, MYText(".") + Type))
+		if (function_library::IsTypeFile(filename, MYText(".") + Type))
 			return true;
 	}
 	return false;
@@ -170,10 +158,21 @@ bool IsMusicCompressTypeFile(const MYChar* filename)
 {
 	for (auto Type : QQMusicCompressType)
 	{
-		if (IsTypeFile(filename, Type))
+		if (function_library::IsTypeFile(filename, Type))
 			return true;
 	}
 	return false;
+}
+
+bool IsFilterFile(const MYString& filename)
+{
+	for (auto filtername : FilterFileNames)
+	{
+		if (filtername == filename)
+			return true;
+	}
+	return false;
+
 }
 MYString ReplaceFileNameSuffix(const MYChar* FileName, const MYChar* TargetType)
 {
@@ -211,7 +210,10 @@ void ScanAllMusicFile(const MYString& FolderName)
 			else
 			{//文件
 				if (IsMusicTypeFile(wfd.cFileName) || IsMusicCompressTypeFile(wfd.cFileName))
-					AllMusicFile.push_back(pair<MYString, MYString>(FolderName, MYString(wfd.cFileName)));
+					if (!IsFilterFile(wfd.cFileName))
+						AllMusicFile.push_back(pair<MYString, MYString>(FolderName, MYString(wfd.cFileName)));
+					else
+						int iit = 0;
 			}
 		} while (FindNextFile(hFile, &wfd));
 	}
@@ -323,6 +325,28 @@ void CopyMusicFileSecond()
 	}
 	MYCout << "加密文件有" << CopyTempTargetName.size() << "个" << endl;
 	MYCout << "解密后拷贝音乐文件" << count << "个" << endl;
+
+
+	//检测加密文件的最终生成文件，如果没找到，说明生成失败,加入到过滤列表中
+	for (auto pair : CopyTempTargetName)
+	{
+		bool TargetExist = false;;
+		//检测对应的目标音乐文件是否存在
+		for (auto type : MusicFileType)
+		{
+			MYString TargetName = MYString(TargetPath).append(MYText("\\")).append(ReplaceFileNameSuffix(pair.second.c_str(), type.c_str()));
+			if (IsFileExist(TargetName.c_str()))
+			{//文件存在
+				TargetExist = true;
+				break;
+			}
+		}
+		if (!TargetExist)
+		{//最终音乐文件不存在，加入到过滤列表
+			MYCout << "    解密失败：" << GetOutputString(pair.second).c_str() <<" 加入到过滤列表中"<< endl;
+			FilterFileNames.push_back(pair.second);
+		}
+	}
 }
 void RemoveTempFile(const MYString& FolderName)
 {
