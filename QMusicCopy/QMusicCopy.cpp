@@ -410,10 +410,13 @@ string GetOutputString(MYString str)
 #ifdef _UNICODE
 	DWORD dwNum = WideCharToMultiByte(CP_OEMCP, NULL, str.c_str(), -1, NULL, 0, NULL, FALSE);
 
-	char psText[128];
-	memset(psText, 0, 128);
+	char* psText = new char[str.length() *2 ];
+	memset(psText, 0, str.length() * 2);
 	WideCharToMultiByte(CP_OEMCP, NULL, str.c_str(), -1, psText, dwNum, NULL, FALSE);
-	return string(psText);
+
+	string Ret(psText);
+	delete[] psText;
+	return Ret;
 #else
 	return str;
 #endif
