@@ -40,6 +40,8 @@ using MYSMatch = wsmatch;
 class function_library
 {
 public:
+	//文件相关
+#pragma region file
 	//判断文件是否是type类型的文件,如filename=123.mp3 type=.mp3
 	static bool IsTypeFile(const MYString& filename, const MYString& type);
 	/*
@@ -48,12 +50,6 @@ public:
 	types是类型的集合如=.mp3 .mp4
 	*/
 	static bool IsTypesFile(const MYString& filename, const vector<MYString>& types);
-
-	//分割字符串
-	static void SplitStr(const MYString& str, MYChar split_char, vector<MYString> &out);
-	//获取能向cout输出的字符串
-	static string GetOutputString(MYString str);
-
 	/*
 	替换文件的后缀名
 	FileName   = "你好张三.mp3"
@@ -64,16 +60,24 @@ public:
 
 	//获取带路径文件名的纯文件名,如C:\\hello\\1.txt转换为1.txt
 	static MYString GetPureFileName(const MYChar* FileName);
+
 	//获取带路径文件名的纯路径名,如C:\\hello\\1.txt转换为C:\\hello
 	static MYString GetPureFilePath(const MYChar* FileName);
 
+	//获取文件名的纯名称，如1.mp3返回1
+	static MYString GetFileNameNoExtension(const MYString& FileName);
+
+	//获取文件名的后缀，如1.mp3返回.mp3
+	static MYString GetFileNameExtension(const MYString& FileName);
+
+	//获取文件的大小
+	static int GetFileSize(const MYString& FileName);
+
 	//读取一个文本文件，将内容以行为单位，读取到字符串数组中
 	static void ReadFileToStringArray(const MYString& FileName, vector<MYString>& StringArray);
+
 	//将字符串数组写入到一个文本文件中,默认以\r\n分割字符串
 	static void WriteStringArrayToFile(const MYString& FileName, const vector<MYString>& StringArray, const MYString SplitStr=MYText("\r\n"));
-
-	//删除一个字符串末尾的\r \n
-	static void ReadStringEnd_r_n(MYChar* String);
 
 	//该文件是否存在
 	static bool IsFileExist(const MYString& FileName);
@@ -98,6 +102,17 @@ public:
 	*/
 	static void DeleteDirectoryFiles(const MYString& FolderPath, const vector<MYString>& Types, 
 		bool Children= true, bool Folder = true, bool Root=false, int Stage=1);
+
+#pragma  endregion
+
+	//分割字符串
+	static void SplitStr(const MYString& str, MYChar split_char, vector<MYString> &out);
+
+	//获取能向cout输出的字符串
+	static string GetOutputString(MYString str);
+
+	//删除一个字符串末尾的\r \n
+	static void ReadStringEnd_r_n(MYChar* String);
 
 	/*
 	过滤掉源字符串中的敏感词

@@ -77,6 +77,35 @@ MYString function_library::ReplaceFileNameSuffix(const MYString& FileName, const
 	return Ret;
 }
 
+MYString function_library::GetFileNameNoExtension(const MYString& FileName)
+{
+	MYString Temp(FileName);
+	auto index = Temp.find_last_of('.');
+	MYString substr = Temp.substr(0, index);
+	return substr;
+}
+
+MYString function_library::GetFileNameExtension(const MYString& FileName)
+{
+	MYString Temp(FileName);
+	auto index = Temp.find_last_of('.');
+	MYString substr = Temp.substr(index);
+	return substr;
+}
+
+int function_library::GetFileSize(const MYString& FileName)
+{
+	FILE* pFile = nullptr;
+	MYfopen(&pFile, FileName.c_str(), MYText("rb"));
+	if (pFile == nullptr)
+		return 0;
+	fseek(pFile,0,SEEK_END);
+	int Size = ftell(pFile);
+	if (pFile != nullptr)
+		fclose(pFile);
+	return Size;
+}
+
 MYString function_library::GetPureFileName(const MYChar* FileName)
 {
 	MYString Temp(FileName);
