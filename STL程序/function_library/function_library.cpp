@@ -184,6 +184,28 @@ void function_library::ReadStringEnd_r_n(MYChar* String)
 		String[Len - 1] = 0;
 }
 
+int function_library::GetBinaryOneCount(int Value)
+{
+	int count = 0;
+	int flag = 1;
+	while(flag)
+	{
+		if(flag & Value)
+			count++;
+		flag = flag << 1;
+	}
+	return count;
+	/*
+	//以下方法亦可，原理是：整数减去1后，整数最右边的1变成1,1之后的0全部变成1，这时把两个整数与操作，等于清空了最右边的1
+	int count = 0;
+	while (Value)
+	{
+		count++;
+		Value = Value & (Value - 1);
+	}
+	*/
+}
+
 bool function_library::IsFileExist(const MYString& FileName)
 {
 	return MYAccess(FileName.c_str(), 0) == 0;

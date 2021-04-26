@@ -114,6 +114,9 @@ public:
 	//删除一个字符串末尾的\r \n
 	static void ReadStringEnd_r_n(MYChar* String);
 
+	//计算一个整数二进制中的1的个数
+	static int  GetBinaryOneCount(int Value);
+
 	/*
 	过滤掉源字符串中的敏感词
 	src_str源字符串，如邓小平是大坏蛋，六四杀了很多人
