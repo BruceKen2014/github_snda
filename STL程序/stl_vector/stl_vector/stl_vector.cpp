@@ -55,14 +55,16 @@ void print_vector(vector<T> &vec)
 }
 int _tmain(int argc, _TCHAR* argv[])
 {
+
 	//vector初始化
-	vector<int> v1;
-	vector<int> v2 {10, 50, 30, 40};
-	vector<int> v3 = {60, 20, 90};
-	vector<int> v4(v2);
-	vector<int> v5 = v2;
-	vector<int> v6(6);   //vector包含了6个int。默认为0
-	vector<int> v7(6,8); //vector包含了6个8
+	vector<int> v1;//空vector
+	vector<int> v2 {10, 50, 30, 40, 66, 88}; //初始化列表
+	vector<int> v3 = {60, 20, 90}; //初始化列表
+	vector<int> v4(v2);   //拷贝构造
+	vector<int> v5 = v2;  //拷贝构造
+	vector<int> v6(6);    //vector包含了6个int。默认为0
+	vector<int> v7(6,8);  //vector包含了6个8
+	vector<int> v8(v2.begin(), v2.begin() + 3);//用别的vector迭代器构造
 
 	//vector添加元素push_back
 	v2.push_back(36);	 
@@ -90,6 +92,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	it = v1.erase(it);	 //该语句必须调用，否则it会沦为野指针
 	if(it == v1.end())
 		cout<<"删除的是最后一个元素"<<endl;
+
+	//删除指定index的元素，通过index构造迭代器指针
+	v2.erase(v2.begin() + 3);
 
 	//在指定的iterator处插入元素
 	it = v2.insert(v2.begin(), 5);
