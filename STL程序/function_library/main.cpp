@@ -14,25 +14,25 @@ using namespace std;
 
 int main()
 {
-	MYString out_str;
+	wstring out_str;
 	function_library::CensorWord(MYText("邓邓小的才平是大坏蛋"), out_str, { MYText("邓"), MYText("小"), MYText("平") });
 	function_library::CensorWord(MYText("dengxiao的才ping是大坏蛋"), out_str, { MYText("deng"), MYText("xiao"), MYText("ping") });
 	
-	vector<pair<MYString, MYString>> FileNames;
+	vector<pair<wstring, wstring>> FileNames;
 
 	function_library::GetDirectoryFiles(MYText("D:\\Github\\github_snda"), FileNames,{MYText(".cpp"),MYText(".h") }, true);
 	function_library::DeleteDirectoryFiles(MYText("C:\\Users\\Daying\\Desktop\\TestDelete"), {}, true);
 
-	MYString ReplaceRet = function_library::ReplaceFileNameSuffix(MYText("你好张三.mp3"), MYText(".cpp"));
-	MYString ReplaceRet2= function_library::ReplaceFileNameSuffix(MYText("你好张三.mp3"), MYText("cpp"));
+	wstring ReplaceRet = function_library::ReplaceFileNameSuffix(MYText("你好张三.mp3"), MYText(".cpp"));
+	wstring ReplaceRet2= function_library::ReplaceFileNameSuffix(MYText("你好张三.mp3"), MYText("cpp"));
 
-	MYString PureName = function_library::GetPureFileName(MYText("D:\\Github\\github_snda\\12.obj"));
-	MYString PurePath = function_library::GetPureFilePath(MYText("D:\\Github\\github_snda\\12.obj"));
+	wstring PureName = function_library::GetPureFileName(MYText("D:\\Github\\github_snda\\12.obj"));
+	wstring PurePath = function_library::GetPureFilePath(MYText("D:\\Github\\github_snda\\12.obj"));
 
-	vector<MYString>  TextContent;
+	vector<wstring>  TextContent;
 	function_library::ReadFileToStringArray(MYText("输出文件.txt"), TextContent);
 
-	vector<MYString> WriteContent {MYText("dddd"),MYText("中国队") };
+	vector<wstring> WriteContent {MYText("dddd"),MYText("中国队") };
 	function_library::WriteStringArrayToFile(MYText("输出文件.txt"), WriteContent);
 
 	std::cout << "Hello World!\n";
