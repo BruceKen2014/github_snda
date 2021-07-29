@@ -23,16 +23,28 @@ ptr.use_count();
 shared_ptr<int> sp = ptr0.lock();
 if(sp)
   do someting...
+
+注意：
+1、当weak_ptr指向的obj被销毁后，lock将无法获得有效的shared_ptr
+2、如果weak_ptr成功获得了shared_ptr，那么shared_tr的引用将会+1，这个shared_ptr销毁后计数再-1
 */
 void TestWeakPtr()
 {
 	weak_ptr<int> ptr0;				//新建一个空的可以指向int的弱智能指针
 	shared_ptr<int> sha_ptr = make_shared<int>(3);
-	weak_ptr<int> ptr1(sha_ptr);	//新建一个指向共享智能指针的弱智能指针
-	weak_ptr<int> ptr2(ptr1);		//用别的共享智能指针初始化
-
-	if (shared_ptr<int> sp = ptr2.lock())
+	weak_ptr<int> weak_ptr1(sha_ptr);	//新建一个指向共享智能指针的弱智能指针
+	weak_ptr<int> weak_ptr2(weak_ptr1);		//用别的共享智能指针初始化
+	shared_ptr<int> sha_ptr2(weak_ptr2);
 	{
-		cout << *sp << endl;
+		if (shared_ptr<int> sp = weak_ptr2.lock())
+		{
+			cout << *sp << endl;
+		}
 	}
+	sha_ptr2.reset();
+	sha_ptr.reset();
+	weak_ptr1.reset();
+	weak_ptr2.reset();
+	int i = 0;
+	int j = 0;
 }

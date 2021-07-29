@@ -13,7 +13,8 @@ struct Task {
 创建unique_ptr有如下方法：
 1、新建一个空的unique_ptr		std::unique_ptr<int> ptr1
 2、用指针创建一个unique_ptr	std::unique_ptr<Task> taskPtr(new Task(23))
-3、用原生指针创建unique_ptr的时候，传入一个定制的析构器 std::unique_ptr<int,decltype(CallableObject)> ptr(new int, CallableObject);
+3、用别的unique_ptr创建		std::unique_ptr<int> ptr1(std::move(unique_ptr2)); //这里必须调用move，接管其他unique_ptr的管理权
+4、用原生指针创建unique_ptr的时候，传入一个定制的析构器 std::unique_ptr<int,decltype(CallableObject)> ptr(new int, CallableObject);
 
 判断是否为空：
 1、if (!ptr1)
@@ -42,20 +43,37 @@ unique_tr ptr1(st::move(ptr2)); 正确！可以移动
 注意：
 1、两个unique_ptr之间的传递类似于 ptr1.reset(ptr2.release()); ptr2交出控制权，ptr1释放了自身指针的同时接管了ptr2交出的指针
 2、unique_ptr是独占智能指针，不可以拷贝构造、赋值，但可以通过函数进行返回，因为返回的时候实际上调用了移动构造函数。
-3、没有make_shared这种函数来返回unique_ptr。
-4、unique_ptr指定析构器的做法和shared_ptr不一样，
-   unique_ptr的格式是unique_ptr<int, D> ptr(new int ,d)；
+3、C++14提供了make_unique这种函数来返回unique_ptr,但C++11没有。
+4、因为unique_ptr天然不支持拷贝和赋值，所以继承体系中的转换就不受支持，比如class B:public A, unique_ptr<B> b = a;//a is unique_ptr<A>, error!
+   如果要使用这种转换，只能通过.get()函数获取原生指针，然后用原生指针进行转换。
+5、因为unique_ptr不支持拷贝，所以函数参数如果是unique_ptr，那么外部调用时只能通过std::move进行授权移动，这应当格外注意。一旦调用了std::move(a)，则a就已经失去了智能指针的控制权了。
+   如果我们不希望移动，则应当使用引用参数而不是值参数。
+6、unique_ptr指定析构器的做法和shared_ptr不一样，
+   unique_ptr的格式是unique_ptr<int, D> ptr(new int ,d)；C++20中，可以直接使用unique_ptr<int, D> ptr(new int)；省略了d
    shared_ptr的格式是shared_ptr<int> ptr(new int, d);
+   
 */
+
+//使用引用传递函数参数
+void process(unique_ptr<Task>& ptr)
+{
+}
 void TestUniquePtr()
 {
-	// 空对象 unique_ptr
-	std::unique_ptr<int> ptr1;
-
 	{
+		//传递定制删除器
 		auto deleter = [](int* p) { cout << "delete " << *p << endl; delete p; };
 		std::unique_ptr<int, decltype(deleter)> ptr(new int(12), deleter);
 	}
+
+	{
+		unique_ptr<Task> ptr0 = make_unique<Task>(12);
+		process(ptr0);
+		int tt = 0;
+	}
+
+	// 空对象 unique_ptr
+	std::unique_ptr<int> ptr1;
 	// 检查 ptr1 是否为空
 	if (!ptr1)
 		std::cout << "ptr1 is empty" << std::endl;
