@@ -109,8 +109,8 @@ wstring function_library::ReplaceFileNameSuffix(const wstring& FileName, const w
 	wstring TempTargetType = TargetType;
 
 	//进行一层处理，如果传入的类型不带.，则我们要加上一个.
-	if (TempTargetType.find(TEXT(".")) == TempTargetType.npos)
-		TempTargetType = TEXT(".") + TempTargetType;
+	if (TempTargetType.find(MYText(".")) == TempTargetType.npos)
+		TempTargetType = MYText(".") + TempTargetType;
 	format.append(TempTargetType);
 
 	smatch search_result;
@@ -256,7 +256,7 @@ void function_library::ReadFileToStringArray(const string& FileName, vector<stri
 	while (1)
 	{
 		memset(LineText, 0, sizeof(LineText));
-		void* pOver = fgets(LineText, sizeof(LineText) / sizeof(wchar_t), pFile);
+		void* pOver = fgets(LineText, sizeof(LineText) / sizeof(char), pFile);
 		function_library::ReadStringEnd_r_n(LineText);
 		auto TextLen = strlen(LineText);
 		if (TextLen > 0)
@@ -277,13 +277,12 @@ void function_library::WriteStringArrayToFile(const wstring& FileName, const vec
 	_wfopen_s(&pFile, FileName.c_str(), MYText("wb+"));
 	if (pFile == nullptr)
 		return;
+
 	for (decltype(StringArray.size()) i = 0; i < StringArray.size(); ++i)
 	{
 		fwrite(StringArray[i].c_str(), sizeof(wchar_t), StringArray[i].length(), pFile);
 		if (i != StringArray.size() - 1)
-		{
 			fwrite(SplitStr.c_str(), sizeof(wchar_t), SplitStr.length(), pFile);
-		}
 	}
 	if (pFile != nullptr)
 		fclose(pFile);
@@ -316,13 +315,13 @@ void function_library::ReadStringEnd_r_n(wchar_t* String)
 	auto Len = wcslen(String);
 	if (Len == 0)
 		return;
-	if (String[Len - 1] == '\n')
+	while (String[Len - 1] == wchar_t('\n') || String[Len - 1] == wchar_t('\r'))
+	{
 		String[Len - 1] = 0;
-	Len = wcslen(String);
-	if (Len == 0)
-		return;
-	if (String[Len - 1] == '\r')
-		String[Len - 1] = 0;
+		Len = wcslen(String);
+		if (Len == 0)
+			break;
+	}
 }
 
 void function_library::ReadStringEnd_r_n(char* String)
@@ -333,13 +332,13 @@ void function_library::ReadStringEnd_r_n(char* String)
 	auto Len = strlen(String);
 	if (Len == 0)
 		return;
-	if (String[Len - 1] == '\n')
+	while (String[Len - 1] == '\n' || String[Len - 1] == '\r')
+	{
 		String[Len - 1] = 0;
-	Len = strlen(String);
-	if (Len == 0)
-		return;
-	if (String[Len - 1] == '\r')
-		String[Len - 1] = 0;
+		Len = strlen(String);
+		if (Len == 0)
+			break;
+	}
 }
 
 int function_library::GetBinaryOneCount(int Value)
@@ -378,9 +377,9 @@ bool function_library::IsFileExist(const string& FileName)
 void function_library::GetDirectoryFiles(const wstring& FolderPath, vector<pair<wstring, wstring>>& FileNames, const vector<wstring>& Types, bool Children /*= true*/)
 {
 	HANDLE hFile = 0;
-	WIN32_FIND_DATA wfd; //数据结构;
+	WIN32_FIND_DATAW wfd; //数据结构;
 	wstring p;
-	hFile = FindFirstFile(p.assign(FolderPath).append(MYText("\\*")).c_str(), &wfd);
+	hFile = FindFirstFileW(p.assign(FolderPath).append(MYText("\\*")).c_str(), &wfd);
 	int count = 0;
 	if (hFile != INVALID_HANDLE_VALUE)
 	{//find
@@ -401,7 +400,7 @@ void function_library::GetDirectoryFiles(const wstring& FolderPath, vector<pair<
 				if (Types.size() == 0 || IsTypesFile(wfd.cFileName, Types))
 					FileNames.push_back({ FolderPath, wstring(wfd.cFileName) });
 			}
-		} while (FindNextFile(hFile, &wfd));
+		} while (FindNextFileW(hFile, &wfd));
 	}
 }
 

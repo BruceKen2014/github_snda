@@ -4,12 +4,7 @@
 
 using namespace std;
 
-#ifdef _UNICODE
-#define MYText(txt) L##txt
-#else
-
-
-#endif
+#define MYText(str)  L##str
 
 class function_library
 {
@@ -61,7 +56,7 @@ public:
 
 	//将字符串数组写入到一个文本文件中,默认以\r\n分割字符串
 	static void WriteStringArrayToFile(const string& FileName, const vector<string>& StringArray, const string SplitStr ="\r\n");
-	static void WriteStringArrayToFile(const wstring& FileName, const vector<wstring>& StringArray, const wstring SplitStr=MYText("\r\n"));
+	static void WriteStringArrayToFile(const wstring& FileName, const vector<wstring>& StringArray, const wstring SplitStr=L"\r\n");
 
 	//该文件是否存在
 	static bool IsFileExist(const string& FileName);
