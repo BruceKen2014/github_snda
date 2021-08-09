@@ -86,6 +86,8 @@ public:
 
 #pragma  endregion
 
+	//字符串相关
+#pragma region string
 	//分割字符串
 	static void SplitStr(const string& str, char split_char, vector<string> &out);
 	static void SplitStr(const wstring& str, wchar_t split_char, vector<wstring> &out);
@@ -98,9 +100,6 @@ public:
 	static void ReadStringEnd_r_n(char* String);
 	static void ReadStringEnd_r_n(wchar_t* String);
 
-	//计算一个整数二进制中的1的个数
-	static int  GetBinaryOneCount(int Value);
-
 	/*
 	过滤掉源字符串中的敏感词
 	src_str源字符串，如邓小平是大坏蛋，六四杀了很多人
@@ -109,4 +108,18 @@ public:
 	*/
 	static bool CensorWord(const string& src_str, string& out_str, const vector<string>& censor_words);
 	static bool CensorWord(const wstring& src_str, wstring& out_str, const vector<wstring>& censor_words);
+#pragma  endregion
+
+	//其他
+#pragma region etc
+	//计算一个整数二进制中的1的个数
+	static int  GetBinaryOneCount(int Value);
+	
+	//以下两个函数成对出现，调用第一个函数开始记录时间，调用第二个函数返回距离调用第一个函数经过了多少时间
+	//用于计算两个函数之间的代码时间消耗,单位毫秒ms
+	static void  StartCountDurationTime();
+	static int   GetDurationTime();
+#pragma  endregion
+
+
 };

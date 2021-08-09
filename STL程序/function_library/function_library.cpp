@@ -2,9 +2,14 @@
 
 #include <regex>
 #include <windows.h>
+#include <sys/timeb.h>
 #include <corecrt_io.h>
 #include "function_library.h"
 
+namespace
+{
+	unsigned long long g_iStartTime ;
+}
 
 bool function_library::IsTypeFile(const wstring& filename, const wstring& type)
 {
@@ -361,6 +366,22 @@ int function_library::GetBinaryOneCount(int Value)
 		Value = Value & (Value - 1);
 	}
 	*/
+}
+
+void function_library::StartCountDurationTime()
+{
+	timeb   tp;
+	ftime(&tp);
+	g_iStartTime = tp.time * 1000 + tp.millitm;
+}
+
+int function_library::GetDurationTime()
+{
+	int Ret = 0;
+	timeb   tp;
+	ftime(&tp);
+	Ret =static_cast<int>(tp.time * 1000 + tp.millitm - g_iStartTime);
+	return Ret;
 }
 
 bool function_library::IsFileExist(const wstring& FileName)
