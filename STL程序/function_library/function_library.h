@@ -6,6 +6,13 @@ using namespace std;
 
 #define MYText(str)  L##str
 
+template<typename T1, typename T2>
+std::ostream& operator <<(std::ostream& os, const std::pair<T1, T2>& pair)
+{
+	os << pair.first << ":" << pair.second << " ";
+	return os;
+}
+
 class function_library
 {
 public:
@@ -119,6 +126,15 @@ public:
 	//用于计算两个函数之间的代码时间消耗,单位毫秒ms
 	static void  StartCountDurationTime();
 	static int   GetDurationTime();
+
+	//将vector set list map中的所有元素输出到cout中,主要用来调试
+	template<typename T>
+	static void PrintContainer(const T& vec)
+	{
+		for (const auto& value : vec)
+			cout << value << " ";
+		cout << endl;
+	}
 #pragma  endregion
 
 
