@@ -107,6 +107,9 @@ namespace function_library
 	void ReadStringEnd_r_n(char* String);
 	void ReadStringEnd_r_n(wchar_t* String);
 
+	//判断一个字符是否是数字字符
+	bool IsNumberChar(char c);
+
 	/*
 	过滤掉源字符串中的敏感词
 	src_str源字符串，如邓小平是大坏蛋，六四杀了很多人
@@ -117,6 +120,10 @@ namespace function_library
 	bool CensorWord(const wstring& src_str, wstring& out_str, const vector<wstring>& censor_words);
 #pragma  endregion
 
+#pragma region Expression
+	void ExcuteExpression(const char* str);
+
+#pragma  endregion
 	//其他
 #pragma region etc
 	//计算一个整数二进制中的1的个数
@@ -127,6 +134,14 @@ namespace function_library
 	void  StartCountDurationTime();
 	int   GetDurationTime();
 
+
+#pragma  endregion
+
+#pragma region DebugFunction
+	//打印中缀表达式
+	void Debug_PrintMiddleExpression(const char* str);
+	//打印后缀表达式
+	void Debug_PrintBackExpression(const char* str);
 	//将vector set list map中的所有元素输出到cout中,主要用来调试
 	template<typename T>
 	void PrintContainer(const T& vec)
@@ -136,6 +151,4 @@ namespace function_library
 		cout << endl;
 	}
 #pragma  endregion
-
-
 };

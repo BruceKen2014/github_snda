@@ -5,6 +5,7 @@
 #include <sys/timeb.h>
 #include <corecrt_io.h>
 #include "function_library.h"
+#include "DexExpression.h"
 
 namespace
 {
@@ -348,6 +349,26 @@ namespace function_library
 		}
 	}
 
+	bool IsNumberChar(char c)
+	{
+		switch (c)
+		{
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '.':
+			return true;
+		}
+		return false;
+	}
+
 	int GetBinaryOneCount(int Value)
 	{
 		int count = 0;
@@ -606,4 +627,29 @@ namespace function_library
 		out_str = ret;
 		return true;
 	}
+
+	void ExcuteExpression(const char* str)
+	{
+		ExcuteExp(str);
+	}
+
+	void Debug_PrintMiddleExpression(const char* str)
+	{
+		vector<stExpStackValue> middle;
+		StrToExpr(str, middle);
+		function_library::PrintContainer(middle);
+	}
+
+	void Debug_PrintBackExpression(const char* str)
+	{
+		//字符串分割为中缀表达式
+		vector<stExpStackValue> middle;
+		StrToExpr(str, middle);
+
+		//中缀转换为后缀表达式
+		vector<stExpStackValue> hou;
+		MiddleToHou(middle, hou);
+		function_library::PrintContainer(hou);
+	}
+
 }
