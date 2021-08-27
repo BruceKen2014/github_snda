@@ -92,10 +92,12 @@ struct stExpStackValue
 			}
 		case Expr_String:
 			{
-				if(strlen(s_value) + strlen(val.s_value) < MAX_EXPR_STRING)
+			string this_str = GetString();
+			string val_str = val.GetString();
+				if(this_str.length() + val_str.length() < MAX_EXPR_STRING)
 				{
-					strcat_s(ret.s_value, s_value);
-					strcat_s(ret.s_value, val.s_value);
+					strcat_s(ret.s_value, this_str.c_str());
+					strcat_s(ret.s_value, val_str.c_str());
 				}	
 				else
 				{
@@ -224,27 +226,32 @@ using IntefaceDelegate_Type = std::function<void(stExpStackValue[], int, stExpSt
 extern map<string, IntefaceDelegate_Type> g_ExprMap;
 
 //注册外部的命令函数
-#define DECLARE_COMMAND(command_function)	g_ExprMap[#command_function] = command_function;
+#define REGISTER_COMMAND(command_function)	g_ExprMap[#command_function] = command_function;
 
-//内部注册测试函数
-#define DECLARE_COMMAND_TEST \
-DECLARE_COMMAND(Say) \
-DECLARE_COMMAND(SetHp)\
-DECLARE_COMMAND(GetHp)
+//内部注册库函数
+#define REGISTER_COMMAND_LIB \
+REGISTER_COMMAND(ex_print) \
+REGISTER_COMMAND(ex_max)\
+REGISTER_COMMAND(ex_min) \
+REGISTER_COMMAND(ex_sin)\
+REGISTER_COMMAND(ex_cos)
 
-//测试函数
-extern void Say(stExpStackValue value1[], int valueCount, stExpStackValue& retValue);
-extern void SetHp(stExpStackValue value1[], int valueCount, stExpStackValue& retValue);
-extern void GetHp(stExpStackValue value1[], int valueCount, stExpStackValue& retValue);
+#define DECLARE_COMMAND(cmd)	extern void cmd(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
+
+//脚本库提供的函数支持
+DECLARE_COMMAND(ex_print);
+DECLARE_COMMAND(ex_max);
+DECLARE_COMMAND(ex_min);
+DECLARE_COMMAND(ex_sin);
+DECLARE_COMMAND(ex_cos);
 
 /*
 外部使用者使用表达式步骤：
-1、添加函数，格式如同Say
-2、调用DECLARE_COMMAND注册函数
+1、添加函数，格式如同ex_print
+2、调用REGISTER_COMMAND注册函数
 
 测试表达式：	
-function_library::ExcuteExpression("Say(\"hello world!\")");
-function_library::ExcuteExpression("SetHp(2.0*3 + GetHp())");
+function_library::ExcuteExpression("print(\"hello world!\")");
 */
 
 #endif

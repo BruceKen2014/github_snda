@@ -2,6 +2,7 @@
 
 
 #include "DexExpression.h"	
+#include <string>
 
 extern bool IsEExprTypeValue(EExprType type)
 {
@@ -29,6 +30,7 @@ extern EExprType GetEExprTypeOpType(EExprType type1, EExprType type2)
 {
 	//目前只用EExprType的大小进行提升，即后面的优先级比前面的要高
 	//暂时最有意义的是把int 提升成 float
+	//还有是 int float和string作加法时，把int float 提成string，再作操作。
 	return type1 > type2 ? type1 : type2;
 }
 
@@ -61,21 +63,6 @@ std::ostream& operator <<(std::ostream& os, const stExpStackValue& Value)
 }
 
 map<string, IntefaceDelegate_Type> g_ExprMap;
-
-extern void Say(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
-{
-	string str = value1[0].GetString();
-	cout << str << endl;
-}
-extern void SetHp(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
-{
-	int Hp = value1[0].GetInt();
-	cout <<"Player SetHp Success ! Now Hp:"<< Hp << endl;
-}
-extern void GetHp(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
-{
-	retValue.SetInt(99);
-}
 
 bool IsDoubleCharOpType(char* c)
 {
@@ -734,7 +721,9 @@ extern void ExcuteHouExp(vector<stExpStackValue>& value_hou)
 				arr[count] = params[i];
 				count++;
 			}
-			auto command_function = g_ExprMap.find(temp.fun_value);
+			string real_function_name("ex_");
+			real_function_name.append(temp.fun_value);
+			auto command_function = g_ExprMap.find(real_function_name);
 			if (command_function != g_ExprMap.end())
 			{
 				stExpStackValue ret;
@@ -774,7 +763,9 @@ extern void ExcuteHouExp(vector<stExpStackValue>& value_hou)
 					param[s] = container.front();
 					container.pop_front();
 				}
-				g_ExprMap[value_stack.top().fun_value](param, i, ret);
+				string real_function_name("ex_");
+				real_function_name.append(value_stack.top().fun_value);
+				g_ExprMap[real_function_name](param, i, ret);
 				value_stack.pop();//把函数pop掉
 				value_stack.push(ret); //将结果入栈
 				container.clear();
@@ -912,15 +903,47 @@ std::string stExpStackValue::GetString()const
 	case Expr_OP:
 		return Ret;
 	case Expr_Int:
-		return Ret;
+		Ret = std::to_string(i_value);
+		break;
 	case Expr_Float:
-		return Ret;
+	     Ret = std::to_string(f_value);
+		 break;
 	case Expr_String:
-		return s_value;
+		Ret = s_value;
+		break;
 	case Expr_Fun:
-		return fun_value;
+		Ret = fun_value;
+		break;
 	default:
 		break;
 	}
 	return Ret;
+}
+
+extern void ex_print(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
+{
+	string str = value1[0].GetString();
+	cout << str << endl;
+}
+extern void ex_max(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
+{
+	float f1 = value1[0].GetFloat();
+	float f2 = value1[1].GetFloat();
+	retValue.SetFloat(f1 > f2 ? f1 : f2);
+}
+extern void ex_min(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
+{
+	float f1 = value1[0].GetFloat();
+	float f2 = value1[1].GetFloat();
+	retValue.SetFloat(f1 < f2 ? f1 : f2);
+}
+extern void ex_sin(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
+{
+	float f = value1[0].GetFloat();
+	retValue.SetFloat(::sin(f));
+}
+extern void ex_cos(stExpStackValue value1[], int valueCount, stExpStackValue& retValue)
+{
+	float f = value1[0].GetFloat();
+	retValue.SetFloat(::cos(f));
 }
