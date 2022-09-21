@@ -25,6 +25,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	//map插入
 	feeling.insert(pair<string, string>("啊开心","刚才拿到了一血！"));
+	feeling.insert({"hello", "2022"});
 	ret = feeling.insert(pair<string, string>("悲剧","我擦，刚才被拿了一血！"));
 	if(ret.second)	
 		cout<<"插入成功！"<<endl;

@@ -95,6 +95,20 @@ namespace function_library
 
 	//字符串相关
 #pragma region string
+	string int_to_str(int i);
+	string float_to_str(float f);
+
+	int    str_to_int(string str);
+	int    str_to_int(char* str);
+
+	float  str_to_float(string str);
+	float  str_to_float(char* str);
+
+	bool   str_to_bool(string str);
+	bool   str_to_bool(char* str);
+
+	bool   strcat(string& ret, string str);
+	bool   strcat(char* ret, const char* str);
 	//分割字符串
 	void SplitStr(const string& str, char split_char, vector<string> &out);
 	void SplitStr(const wstring& str, wchar_t split_char, vector<wstring> &out);
@@ -120,6 +134,10 @@ namespace function_library
 	bool CensorWord(const wstring& src_str, wstring& out_str, const vector<wstring>& censor_words);
 #pragma  endregion
 
+#pragma region math
+	//计算平面3点形成的三角形的面积
+	float CalculateTriangleArea(float Ax, float Ay, float Bx, float By, float Cx, float Cy);
+#pragma endregion
 #pragma region Expression
 	void ExcuteExpression(const char* str);
 
@@ -133,7 +151,13 @@ namespace function_library
 	//用于计算两个函数之间的代码时间消耗,单位毫秒ms
 	void  StartCountDurationTime();
 	int   GetDurationTime();
-
+	template<typename T>
+	inline T& clip(T& _value, const T& _small, const T& _big)
+	{
+		if (_value < _small) _value = _small;
+		else if (_value > _big)   _value = _big;
+		return _value;
+	}
 
 #pragma  endregion
 

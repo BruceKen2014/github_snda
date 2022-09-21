@@ -30,12 +30,13 @@ void test_regex();		//单纯地查找一个字符串
 void check_filename();	//测试文件是否是指定类型的文件
 void find_words();		//查找指定字符串中符合某表达式的单词
 void replace_words();   //查找指定字符串,并将替换为另外格式的字符串
-
+void test_besh_wishes();
 
 //判断文件是否是type类型的文件,如filename=123.mp3 type=mp3
 bool IsTypeFile(string filename, string type);
 int main()
 {
+	test_besh_wishes();
 	bool CheckType = IsTypeFile("new.mp3", "mp3");
 	CheckType = IsTypeFile("new.cpp", "cpp");
 	CheckType = IsTypeFile("new.CXX", "CXX");
@@ -73,6 +74,17 @@ void check_filename()
 		bool Ret = regex_search(filename, search_result, reg);
 		if (Ret)
 			cout << "name:" << search_result.str(1) << " type "<< search_result.str(2) << endl;
+	}
+}
+
+void test_besh_wishes()
+{
+	string target_str = "besh wishes for you";
+	regex reg(string("[^ ]*[o]+[^ ]*"));
+
+	for (sregex_iterator it(target_str.begin(), target_str.end(), reg), end_it; it != end_it; ++it)
+	{
+		cout <<  it->str() << endl;
 	}
 }
 

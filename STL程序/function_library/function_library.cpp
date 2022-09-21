@@ -14,6 +14,77 @@ namespace
 
 namespace function_library
 {
+	string int_to_str(int i)
+	{
+		char ch[32];
+		sprintf_s(ch, "%d", i);
+		return string(ch);
+	}
+	string float_to_str(float f)
+	{
+		char ch[32];
+		sprintf_s(ch, "%.3f", f);
+		return string(ch);
+	}
+
+
+
+	int str_to_int(string str)
+	{
+		return atoi(str.c_str());
+	}
+	int str_to_int(char* str)
+	{
+		if (str == NULL)
+			return 0;
+		return atoi(str);
+	}
+
+	float str_to_float(string str)
+	{
+		return static_cast<float>(atof(str.c_str()));
+	}
+	float str_to_float(char* str)
+	{
+		if (str == NULL)
+			return 0.0f;
+		return static_cast<float>(atof(str));
+	}
+
+	bool str_to_bool(string str)
+	{
+		if (str == "true")
+			return true;
+		if (str == "false")
+			return false;
+		if (str_to_int(str) == 0)
+			return false;
+		return true;
+	}
+
+	bool str_to_bool(char* str)
+	{
+		if (str == NULL)
+			return false;
+		if (strcmp(str, "true") == 0)
+			return true;
+		if (strcmp(str, "false") == 0)
+			return false;
+		if (str_to_int(str) == 0)
+			return false;
+		return true;
+	}
+
+	bool strcat(string& ret, string str)
+	{
+		ret += str;
+		return true;
+	}
+	bool strcat(char* ret, const char* str)
+	{
+		::strcat_s(ret, 1024, str);
+		return true;
+	}
 	bool IsTypeFile(const wstring& filename, const wstring& type)
 	{
 		auto index = filename.find(type);
@@ -69,6 +140,7 @@ namespace function_library
 
 	void SplitStr(const string& str, char split_char, vector<string> &out)
 	{
+		out.clear();
 		auto pt = (char*)str.c_str();
 		auto begin = pt;
 		auto end = strchr(pt, split_char);
@@ -98,7 +170,7 @@ namespace function_library
 		WideCharToMultiByte(CP_OEMCP, NULL, str.c_str(), -1, psText, dwNum, NULL, FALSE);
 		return string(psText);
 #else
-		return str;
+		return std::string();
 #endif
 	}
 
@@ -482,9 +554,9 @@ namespace function_library
 		bool Children, bool Folder, bool Root, int Stage)
 	{
 		HANDLE hFile = 0;
-		WIN32_FIND_DATA wfd; //数据结构;
+		WIN32_FIND_DATAW wfd; //数据结构;
 		wstring p;
-		hFile = FindFirstFile(p.assign(FolderPath).append(MYText("\\*")).c_str(), &wfd);
+		hFile = FindFirstFileW(p.assign(FolderPath).append(MYText("\\*")).c_str(), &wfd);
 		int count = 0;
 		if (hFile != INVALID_HANDLE_VALUE)
 		{//find
@@ -505,10 +577,10 @@ namespace function_library
 					{
 						wstring RemoveFileName = FolderPath;
 						RemoveFileName = RemoveFileName.append(MYText("\\")).append(wfd.cFileName);
-						DeleteFile(RemoveFileName.c_str());
+						DeleteFileW(RemoveFileName.c_str());
 					}
 				}
-			} while (FindNextFile(hFile, &wfd));
+			} while (FindNextFileW(hFile, &wfd));
 		}
 		FindClose(hFile);
 		if (Folder)
@@ -516,11 +588,11 @@ namespace function_library
 			if (Stage == 1)
 			{
 				if (Root)
-					RemoveDirectory(FolderPath.c_str());
+					RemoveDirectoryW(FolderPath.c_str());
 			}
 			else
 			{
-				RemoveDirectory(FolderPath.c_str());
+				RemoveDirectoryW(FolderPath.c_str());
 			}
 		}
 	}
@@ -628,6 +700,12 @@ namespace function_library
 		return true;
 	}
 
+	float CalculateTriangleArea(float Ax, float Ay, float Bx, float By, float Cx, float Cy)
+	{
+		float Ret = 0.0f;
+		return 0.0f;
+	}
+
 	void ExcuteExpression(const char* str)
 	{
 		ExcuteExp(str);
@@ -637,7 +715,7 @@ namespace function_library
 	{
 		vector<stExpStackValue> middle;
 		StrToExpr(str, middle);
-		function_library::PrintContainer(middle);
+		PrintContainer(middle);
 	}
 
 	void Debug_PrintBackExpression(const char* str)
@@ -649,7 +727,7 @@ namespace function_library
 		//中缀转换为后缀表达式
 		vector<stExpStackValue> hou;
 		MiddleToHou(middle, hou);
-		function_library::PrintContainer(hou);
+		PrintContainer(hou);
 	}
 
 }

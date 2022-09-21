@@ -28,6 +28,12 @@ class ModeClass
 public:
 	int Mod(int a, int b) { return a % b; };
 };
+class OrClass
+{
+public:
+	int Or(int a, int b) { return a | b; };
+	void Print(){}
+};
 
 int main()
 {
@@ -51,6 +57,11 @@ int main()
 	//function存储类成员函数
 	ModeClass MC;
 	FunctionMap["%"] = std::bind(&ModeClass::Mod, MC, placeholders::_1, placeholders::_2);
+
+	//function存储类成员函数
+	OrClass Orc;
+	auto mf= mem_fn(&OrClass::Print);
+	mf(&Orc);
 
 	cout << FunctionMap["+"](10, 3) << endl;
 	cout << FunctionMap["-"](10, 3) << endl;

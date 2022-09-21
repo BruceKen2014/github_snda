@@ -716,7 +716,7 @@ extern void ExcuteHouExp(vector<stExpStackValue>& value_hou)
 			}
 			stExpStackValue arr[10];
 			int count = 0;
-			for (int i = params.size() - 1; i >= 0; i--)
+			for (auto i = params.size() - 1; i >= 0; i--)
 			{
 				arr[count] = params[i];
 				count++;
