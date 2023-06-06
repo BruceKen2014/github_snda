@@ -29,40 +29,40 @@ namespace function_library
 
 
 
-	int str_to_int(string str)
+	int string_toint(string str)
 	{
 		return atoi(str.c_str());
 	}
-	int str_to_int(char* str)
+	int string_toint(char* str)
 	{
 		if (str == NULL)
 			return 0;
 		return atoi(str);
 	}
 
-	float str_to_float(string str)
+	float string_tofloat(string str)
 	{
 		return static_cast<float>(atof(str.c_str()));
 	}
-	float str_to_float(char* str)
+	float string_tofloat(char* str)
 	{
 		if (str == NULL)
 			return 0.0f;
 		return static_cast<float>(atof(str));
 	}
 
-	bool str_to_bool(string str)
+	bool string_tobool(string str)
 	{
 		if (str == "true")
 			return true;
 		if (str == "false")
 			return false;
-		if (str_to_int(str) == 0)
+		if (string_toint(str) == 0)
 			return false;
 		return true;
 	}
 
-	bool str_to_bool(char* str)
+	bool string_tobool(char* str)
 	{
 		if (str == NULL)
 			return false;
@@ -70,7 +70,7 @@ namespace function_library
 			return true;
 		if (strcmp(str, "false") == 0)
 			return false;
-		if (str_to_int(str) == 0)
+		if (string_toint(str) == 0)
 			return false;
 		return true;
 	}
@@ -117,8 +117,10 @@ namespace function_library
 		return false;
 	}
 
-	void SplitStr(const wstring& str, wchar_t split_char, vector<wstring> &out)
+
+	void SplitStr(const wstring& str, wchar_t split_char, vector<wstring>& out)
 	{
+		out.clear();
 		wchar_t* pt = (wchar_t*)str.c_str();
 		wchar_t* begin = pt;
 		wchar_t* end = wcschr(pt, split_char);
@@ -136,6 +138,20 @@ namespace function_library
 			temp.insert(0, begin, pt + str.size() - begin);
 			out.push_back(temp);
 		}
+	}
+
+	//处理可变参数
+	string string_format(const char* fmt, ...)
+	{
+		//可变参数处理
+		va_list ap;
+		va_start(ap, fmt);
+
+		char buffer[256] = { 0 };
+		vsprintf_s(buffer, fmt, ap);
+		va_end(ap);
+
+		return buffer;
 	}
 
 	void SplitStr(const string& str, char split_char, vector<string> &out)
@@ -177,6 +193,17 @@ namespace function_library
 	std::string GetOutputString(string str)
 	{
 		return str;
+	}
+
+
+	std::string string_replace(const string& str, const string& sub_str, const string& target_str)
+	{
+		string ret = str;
+		//找到要删除的子串
+		int index = str.find(sub_str);
+		if (index != -1)
+			ret.replace(index, sub_str.length(), target_str);
+		return ret;
 	}
 
 	wstring ReplaceFileNameSuffix(const wstring& FileName, const wstring& TargetType)

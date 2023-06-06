@@ -28,11 +28,20 @@ namespace function_library
 	*/
 	bool IsTypesFile(const string& filename, const vector<string>& types);
 	bool IsTypesFile(const wstring& filename, const vector<wstring>& types);
+
+	/*
+	* str     要替换的源字符串
+	* sub_str 要被替换的源字符串中的子串
+	* target_str 要被替换为的字符串
+	* 返回值：替换后的新字符串
+	*/
+	string string_replace(const string&str, const string& sub_str, const string& target_str);
+
 	/*
 	替换文件的后缀名
 	FileName   = "你好张三.mp3"
 	TargetType = .cpp
-	替换后为你好张三.cpp
+	替换后为 你好张三.cpp
 	*/
 	string   ReplaceFileNameSuffix(const string& FileName, const string& TargetType);
 	wstring ReplaceFileNameSuffix(const wstring& FileName, const wstring& TargetType);
@@ -98,17 +107,21 @@ namespace function_library
 	string int_to_str(int i);
 	string float_to_str(float f);
 
-	int    str_to_int(string str);
-	int    str_to_int(char* str);
+	int    string_toint(string str);
+	int    string_toint(char* str);
 
-	float  str_to_float(string str);
-	float  str_to_float(char* str);
+	float  string_tofloat(string str);
+	float  string_tofloat(char* str);
 
-	bool   str_to_bool(string str);
-	bool   str_to_bool(char* str);
+	bool   string_tobool(string str);
+	bool   string_tobool(char* str);
 
 	bool   strcat(string& ret, string str);
 	bool   strcat(char* ret, const char* str);
+
+	//处理可变参数
+	string string_format(const char* fmt, ...);
+
 	//分割字符串
 	void SplitStr(const string& str, char split_char, vector<string> &out);
 	void SplitStr(const wstring& str, wchar_t split_char, vector<wstring> &out);
